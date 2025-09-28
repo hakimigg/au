@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Panel - Beta Website</title>
+    <link rel="stylesheet" href="admin-styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <!-- Login Screen -->
+    <div id="loginScreen" class="login-screen">
+        <div class="login-container">
+            <div class="login-header">
+                <h1>Admin Panel</h1>
+                <p>Beta Website Management</p>
+            </div>
+            <form id="loginForm" class="login-form">
+                <div class="form-group">
+                    <label for="username">Username</label>
+                    <input type="text" id="username" name="username" required>
+                </div>
+                <div class="form-group">
+                    <label for="password">Password</label>
+                    <input type="password" id="password" name="password" required>
+                </div>
+                <button type="submit" class="login-btn">
+                    <span>Sign In</span>
+                </button>
+                <div id="loginError" class="error-message"></div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Admin Dashboard -->
+    <div id="adminDashboard" class="admin-dashboard hidden">
+        <!-- Header -->
+        <header class="admin-header">
+            <div class="header-content">
+                <div class="header-left">
+                    <h1>Admin Dashboard</h1>
+                    <p>Beta Website Management</p>
+                </div>
+                <div class="header-right">
+                    <div class="user-info">
+                        <span id="adminUsername">Admin</span>
+                    </div>
+                    <button id="logoutBtn" class="logout-btn">Logout</button>
+                </div>
+            </div>
+        </header>
+
+        <!-- Main Content -->
+        <main class="admin-main">
+            <!-- Sidebar -->
+            <aside class="admin-sidebar">
+                <nav class="sidebar-nav">
+                    <button class="nav-btn active" data-section="dashboard">
+                        <span class="nav-icon">📊</span>
+                        Dashboard
+                    </button>
+                    <button class="nav-btn" data-section="products">
+                        <span class="nav-icon">📦</span>
+                        Products
+                    </button>
+                    <button class="nav-btn" data-section="companies">
+                        <span class="nav-icon">🏢</span>
+                        Companies
+                    </button>
+                </nav>
+            </aside>
+
+            <!-- Content Area -->
+            <div class="admin-content">
+                <!-- Dashboard Section -->
+                <section id="dashboardSection" class="content-section active">
+                    <div class="section-header">
+                        <h2>Dashboard Overview</h2>
+                        <p>Quick statistics and recent activity</p>
+                    </div>
+                    
+                    <div class="stats-grid">
+                        <div class="stat-card">
+                            <div class="stat-icon">📦</div>
+                            <div class="stat-info">
+                                <h3 id="totalProducts">0</h3>
+                                <p>Total Products</p>
+                            </div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-icon">🏢</div>
+                            <div class="stat-info">
+                                <h3 id="totalCompanies">0</h3>
+                                <p>Companies</p>
+                            </div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-icon">✅</div>
+                            <div class="stat-info">
+                                <h3 id="inStockProducts">0</h3>
+                                <p>In Stock</p>
+                            </div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-icon">💰</div>
+                            <div class="stat-info">
+                                <h3 id="totalValue">$0</h3>
+                                <p>Total Value</p>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Products Section -->
+                <section id="productsSection" class="content-section">
+                    <div class="section-header">
+                        <h2>Products Management</h2>
+                        <button id="addProductBtn" class="add-btn">Add Product</button>
+                    </div>
+                    
+                    <div class="table-container">
+                        <table class="data-table">
+                            <thead>
+                                <tr>
+                                    <th>Name</th>
+                                    <th>Company</th>
+                                    <th>Price</th>
+                                    <th>Stock</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="productsTableBody">
+                                <!-- Products will be loaded here -->
+                            </tbody>
+                        </table>
+                    </div>
+                </section>
+
+                <!-- Companies Section -->
+                <section id="companiesSection" class="content-section">
+                    <div class="section-header">
+                        <h2>Companies Management</h2>
+                        <button id="addCompanyBtn" class="add-btn">Add Company</button>
+                    </div>
+                    
+                    <div class="table-container">
+                        <table class="data-table">
+                            <thead>
+                                <tr>
+                                    <th>Name</th>
+                                    <th>Description</th>
+                                    <th>Products Count</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="companiesTableBody">
+                                <!-- Companies will be loaded here -->
+                            </tbody>
+                        </table>
+                    </div>
+                </section>
+            </div>
+        </main>
+    </div>
+
+    <!-- Product Modal -->
+    <div id="productModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 id="productModalTitle">Add Product</h3>
+                <button class="modal-close">&times;</button>
+            </div>
+            <form id="productForm" class="modal-form">
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="productName">Product Name</label>
+                        <input type="text" id="productName" name="name" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="productCompany">Company</label>
+                        <select id="productCompany" name="company" required>
+                            <!-- Options will be loaded dynamically -->
+                        </select>
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="productPrice">Price ($)</label>
+                        <input type="number" id="productPrice" name="price" step="0.01" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="productStock">Stock</label>
+                        <input type="number" id="productStock" name="stock" required>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="productDescription">Description</label>
+                    <textarea id="productDescription" name="description" rows="3" required></textarea>
+                </div>
+                <div class="form-group">
+                    <label for="productPhoto">Photo URL</label>
+                    <input type="url" id="productPhoto" name="photo" placeholder="https://example.com/image.jpg">
+                </div>
+                <div class="modal-actions">
+                    <button type="button" class="cancel-btn">Cancel</button>
+                    <button type="submit" class="save-btn">Save Product</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Company Modal -->
+    <div id="companyModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 id="companyModalTitle">Add Company</h3>
+                <button class="modal-close">&times;</button>
+            </div>
+            <form id="companyForm" class="modal-form">
+                <div class="form-group">
+                    <label for="companyName">Company Name</label>
+                    <input type="text" id="companyName" name="name" required>
+                </div>
+                <div class="form-group">
+                    <label for="companyDescription">Description</label>
+                    <textarea id="companyDescription" name="description" rows="3" required></textarea>
+                </div>
+                <div class="modal-actions">
+                    <button type="button" class="cancel-btn">Cancel</button>
+                    <button type="submit" class="save-btn">Save Company</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Notification -->
+    <div id="notification" class="notification">
+        <div class="notification-content">
+            <span class="notification-icon"></span>
+            <span class="notification-message"></span>
+        </div>
+    </div>
+
+    <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
+    <script src="supabase-config.js"></script>
+    <script src="admin.js"></script>
+</body>
+</html>
