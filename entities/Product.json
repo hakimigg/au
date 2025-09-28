@@ -1,0 +1,57 @@
+{
+  "name": "Product",
+  "type": "object",
+  "properties": {
+    "name": {
+      "type": "string",
+      "description": "Name of the product"
+    },
+    "description": {
+      "type": "string",
+      "description": "Brief description of the product"
+    },
+    "company": {
+      "type": "string",
+      "enum": [
+        "c1",
+        "c2",
+        "c3",
+        "c4"
+      ],
+      "default": "c1"
+    },
+    "price": {
+      "type": "number",
+      "description": "Price of the product"
+    },
+    "stock": {
+      "type": "number",
+      "description": "Number of items in stock"
+    },
+    "specs": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "spec": {
+            "type": "string"
+          },
+          "value": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "tags": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    }
+  },
+  "required": [
+    "name",
+    "price",
+    "company"
+  ]
+}

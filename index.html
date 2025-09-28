@@ -1,60 +1,30 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Product Plaza</title>
-    <link rel="stylesheet" href="styles.css">
-</head>
-<body>
-    <header>
-        <nav>
-            <div class="logo">Product Plaza</div>
-            <ul class="nav-links">
-                <li><a href="#home">Home</a></li>
-                <li><a href="#products">Products</a></li>
-                <li><a href="#companies">Companies</a></li>
-            </ul>
-        </nav>
-    </header>
-
-    <section id="home" class="hero">
-        <div class="hero-content">
-            <h1>Welcome to Product Plaza</h1>
-            <p>Discover premium products from top brands.</p>
-            <button onclick="showProducts()">Explore Products</button>
-        </div>
-    </section>
-
-    <section id="companies" class="companies">
-        <h2>Our Companies</h2>
-        <div class="company-grid">
-            <div class="company-card" onclick="showCompany('Nokia')">
-                <h3>Nokia</h3>
-                <p>Leading technology company</p>
-            </div>
-            <div class="company-card" onclick="showCompany('Samsung')">
-                <h3>Samsung</h3>
-                <p>Innovation-focused company</p>
-            </div>
-            <div class="company-card" onclick="showCompany('Apple')">
-                <h3>Apple</h3>
-                <p>Premium technology brand</p>
-            </div>
-        </div>
-    </section>
-
-    <section id="products" class="products" style="display: none;">
-        <h2>Featured Products</h2>
-        <div class="product-grid" id="productGrid">
-            <!-- Products will be loaded here -->
-        </div>
-    </section>
-
-    <footer>
-        <p>&copy; 2024 Product Plaza. All rights reserved.</p>
-    </footer>
-
-    <script src="index.js"></script>
-</body>
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="/vite.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
+    <meta http-equiv="Pragma" content="no-cache" />
+    <meta http-equiv="Expires" content="0" />
+    <title>Beta Website</title>
+    <script type="text/javascript">
+      // Single Page Apps for GitHub Pages
+      // https://github.com/rafgraph/spa-github-pages
+      (function(l) {
+        if (l.search[1] === '/' ) {
+          var decoded = l.search.slice(1).split('&').map(function(s) { 
+            return s.replace(/~and~/g, '&')
+          }).join('?');
+          window.history.replaceState(null, null,
+              l.pathname.slice(0, -1) + decoded + l.hash
+          );
+        }
+      }(window.location))
+    </script>
+  </head>
+  <body>
+    <div id="root"></div>
+    <script type="module" src="/src/main.jsx"></script>
+  </body>
 </html>
