@@ -15,11 +15,16 @@ class WebsiteApp {
         }
     }
 
-    initializeApp() {
+    async initializeApp() {
         this.setupEventListeners();
+        this.setupSmoothScrolling();
+        
+        // Wait for database to be ready
+        await this.waitForDatabase();
+        
+        // Load data
         this.loadCompanies();
         this.loadProducts();
-        this.setupSmoothScrolling();
         this.hideLoading();
     }
 
@@ -72,6 +77,31 @@ class WebsiteApp {
         }
     }
 
+    async waitForDatabase() {
+        // Wait for database to be initialized
+        let attempts = 0;
+        const maxAttempts = 50; // 5 seconds max
+        
+        while (!window.database && attempts < maxAttempts) {
+            await new Promise(resolve => setTimeout(resolve, 100));
+            attempts++;
+        }
+        
+        if (!window.database) {
+            console.error('Database not available after waiting');
+            return;
+        }
+        
+        // Wait a bit more for database to load data
+        attempts = 0;
+        while ((window.database.companies.length === 0 || window.database.products.length === 0) && attempts < maxAttempts) {
+            await new Promise(resolve => setTimeout(resolve, 100));
+            attempts++;
+        }
+        
+        console.log('✅ Database ready with', window.database.companies.length, 'companies and', window.database.products.length, 'products');
+    }
+
     hideLoading() {
         const loadingOverlay = document.getElementById('loadingOverlay');
         if (loadingOverlay) {
@@ -82,7 +112,14 @@ class WebsiteApp {
 
     async loadCompanies() {
         try {
+            if (!window.database) {
+                console.warn('Database not ready, retrying...');
+                setTimeout(() => this.loadCompanies(), 1000);
+                return;
+            }
+            
             const companies = database.getCompanies();
+            console.log('📋 Loading companies for website:', companies.length);
             this.renderCompanies(companies);
             this.renderFilterButtons(companies);
         } catch (error) {
@@ -128,7 +165,14 @@ class WebsiteApp {
 
     async loadProducts() {
         try {
+            if (!window.database) {
+                console.warn('Database not ready, retrying...');
+                setTimeout(() => this.loadProducts(), 1000);
+                return;
+            }
+            
             const products = database.getAvailableProducts();
+            console.log('📦 Loading products for website:', products.length);
             this.renderProducts(products);
         } catch (error) {
             console.error('Error loading products:', error);

@@ -33,6 +33,12 @@ class AdminPanel {
             logoutBtn.addEventListener('click', () => this.handleLogout());
         }
 
+        // Refresh button
+        const refreshBtn = document.getElementById('refreshBtn');
+        if (refreshBtn) {
+            refreshBtn.addEventListener('click', () => this.handleRefresh());
+        }
+
         // Navigation buttons
         document.querySelectorAll('.nav-btn').forEach(btn => {
             btn.addEventListener('click', (e) => this.switchSection(e.target.dataset.section));
@@ -398,6 +404,20 @@ class AdminPanel {
         }
     }
 
+    async handleRefresh() {
+        try {
+            this.showNotification('🔄 Syncing with database...', 'info');
+            
+            // Force refresh from Supabase
+            await window.refreshDatabase();
+            
+            this.showNotification('✅ Successfully synced with database!', 'success');
+        } catch (error) {
+            console.error('Refresh failed:', error);
+            this.showNotification('❌ Failed to sync with database', 'error');
+        }
+    }
+
     showNotification(message, type = 'success') {
         const notification = document.getElementById('notification');
         const messageElement = notification.querySelector('.notification-message');
@@ -414,6 +434,9 @@ class AdminPanel {
         } else if (type === 'error') {
             iconElement.textContent = '❌';
             notification.classList.add('error');
+        } else if (type === 'info') {
+            iconElement.textContent = '💬';
+            notification.classList.remove('error');
         }
 
         notification.classList.add('show');

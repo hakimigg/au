@@ -1,9 +1,6 @@
 -- Database Schema for Beta Website
 -- Run this in your Supabase SQL Editor
 
--- Enable Row Level Security
-ALTER DATABASE postgres SET "app.jwt_secret" TO 'your-jwt-secret';
-
 -- Create companies table
 CREATE TABLE IF NOT EXISTS companies (
     id TEXT PRIMARY KEY,

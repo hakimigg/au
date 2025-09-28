@@ -17,11 +17,16 @@ class SupabaseDatabase {
 
     async init() {
         try {
+            // Clear old localStorage data to force sync with Supabase
+            this.clearOldLocalStorage();
+            
             // Load data from Supabase
             await this.loadCompaniesFromSupabase();
             await this.loadProductsFromSupabase();
+            
+            console.log('✅ Successfully loaded data from Supabase');
         } catch (error) {
-            console.warn('Failed to load from Supabase, using local data:', error);
+            console.warn('❌ Failed to load from Supabase, using local data:', error);
             this.loadFromLocalStorage();
         }
     }
@@ -40,14 +45,19 @@ class SupabaseDatabase {
     // Companies methods
     async loadCompaniesFromSupabase() {
         try {
+            console.log('🏢 Loading companies from Supabase...');
             const { data, error } = await supabase
                 .from('companies')
                 .select('*')
                 .order('created_at', { ascending: true });
 
-            if (error) throw error;
+            if (error) {
+                console.error('Supabase companies error:', error);
+                throw error;
+            }
             
             this.companies = data || [];
+            console.log(`✅ Loaded ${this.companies.length} companies from Supabase`);
             this.saveCompaniesToLocalStorage();
         } catch (error) {
             console.error('Error loading companies:', error);
@@ -167,14 +177,19 @@ class SupabaseDatabase {
     // Products methods
     async loadProductsFromSupabase() {
         try {
+            console.log('📦 Loading products from Supabase...');
             const { data, error } = await supabase
                 .from('products')
                 .select('*')
                 .order('created_at', { ascending: true });
 
-            if (error) throw error;
+            if (error) {
+                console.error('Supabase products error:', error);
+                throw error;
+            }
             
             this.products = data || [];
+            console.log(`✅ Loaded ${this.products.length} products from Supabase`);
             this.saveProductsToLocalStorage();
         } catch (error) {
             console.error('Error loading products:', error);
@@ -359,8 +374,17 @@ class SupabaseDatabase {
         }
     }
 
+    // Clear old localStorage data
+    clearOldLocalStorage() {
+        localStorage.removeItem('website_companies');
+        localStorage.removeItem('website_products');
+        localStorage.removeItem('sync_queue');
+        console.log('🗑️ Cleared old localStorage data');
+    }
+
     // Local storage fallback
     loadFromLocalStorage() {
+        console.log('📱 Loading from localStorage as fallback');
         const savedCompanies = localStorage.getItem('website_companies');
         const savedProducts = localStorage.getItem('website_products');
 
@@ -369,10 +393,10 @@ class SupabaseDatabase {
                 this.companies = JSON.parse(savedCompanies);
             } catch (e) {
                 console.warn('Failed to load companies from storage:', e);
-                this.companies = this.getDefaultCompanies();
+                this.companies = [];
             }
         } else {
-            this.companies = this.getDefaultCompanies();
+            this.companies = [];
         }
 
         if (savedProducts) {
@@ -380,10 +404,10 @@ class SupabaseDatabase {
                 this.products = JSON.parse(savedProducts);
             } catch (e) {
                 console.warn('Failed to load products from storage:', e);
-                this.products = this.getDefaultProducts();
+                this.products = [];
             }
         } else {
-            this.products = this.getDefaultProducts();
+            this.products = [];
         }
     }
 
@@ -403,29 +427,25 @@ class SupabaseDatabase {
         }
     }
 
-    getDefaultCompanies() {
-        return [
-            { id: 'nokia', name: 'Nokia', description: 'Leading telecommunications and technology company', logo: null },
-            { id: 'samsung', name: 'Samsung', description: 'Global technology conglomerate', logo: null },
-            { id: 'apple', name: 'Apple', description: 'Premium consumer electronics and software', logo: null },
-            { id: 'premium', name: 'Premium', description: 'Luxury and premium products', logo: null }
-        ];
-    }
-
-    getDefaultProducts() {
-        return [
-            {
-                id: 'p1',
-                name: 'Nokia Smartphone Pro',
-                description: 'Advanced smartphone with cutting-edge technology',
-                company: 'nokia',
-                price: 299.99,
-                stock: 45,
-                photos: ['https://images.unsplash.com/photo-1511707171634-5f897ff02aa9?w=400&h=300&fit=crop'],
-                tags: ['smartphone', 'electronics', 'mobile'],
-                specs: { screen: '6.5 inch OLED', storage: '128GB', ram: '8GB', camera: '48MP Triple Camera' }
-            }
-        ];
+    // Force refresh from Supabase
+    async forceRefresh() {
+        console.log('🔄 Force refreshing data from Supabase...');
+        this.clearOldLocalStorage();
+        await this.init();
+        
+        // Trigger UI refresh if admin panel is loaded
+        if (window.adminPanel) {
+            window.adminPanel.loadDashboardStats();
+            window.adminPanel.loadProducts();
+            window.adminPanel.loadCompanies();
+            window.adminPanel.loadCompanyOptions();
+        }
+        
+        // Trigger main website refresh if loaded
+        if (window.app) {
+            window.app.loadCompanies();
+            window.app.loadProducts();
+        }
     }
 
     // Public API methods (same as before)
@@ -470,5 +490,17 @@ class SupabaseDatabase {
     }
 }
 
-// Replace the old database instance
+// Initialize database and expose refresh function
 window.database = new SupabaseDatabase();
+
+// Expose refresh function globally
+window.refreshDatabase = () => {
+    return window.database.forceRefresh();
+};
+
+// Auto-refresh every 30 seconds when online
+setInterval(() => {
+    if (navigator.onLine && window.database) {
+        window.database.syncWithSupabase();
+    }
+}, 30000);
