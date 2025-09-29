@@ -1,0 +1,55 @@
+name: Keep Supabase Database Active
+
+on:
+  schedule:
+    # Runs every day at 8:00 AM UTC (adjust timezone as needed)
+    - cron: '0 8 * * *'
+  
+  # Allow manual trigger for testing
+  workflow_dispatch:
+
+jobs:
+  ping-database:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Ping Supabase Database
+        run: |
+          echo "🏓 Pinging Supabase database to keep it active..."
+          
+          # Ping the companies table
+          response=$(curl -s -w "%{http_code}" -X GET \
+            "${{ secrets.SUPABASE_URL }}/rest/v1/companies?select=count" \
+            -H "apikey: ${{ secrets.SUPABASE_ANON_KEY }}" \
+            -H "Content-Type: application/json")
+          
+          http_code="${response: -3}"
+          
+          if [ "$http_code" -eq 200 ]; then
+            echo "✅ Database ping successful! Status: $http_code"
+          else
+            echo "❌ Database ping failed! Status: $http_code"
+            exit 1
+          fi
+          
+      - name: Ping Products Table (Backup)
+        run: |
+          echo "🏓 Backup ping to products table..."
+          
+          response=$(curl -s -w "%{http_code}" -X GET \
+            "${{ secrets.SUPABASE_URL }}/rest/v1/products?select=count&limit=1" \
+            -H "apikey: ${{ secrets.SUPABASE_ANON_KEY }}" \
+            -H "Content-Type: application/json")
+          
+          http_code="${response: -3}"
+          
+          if [ "$http_code" -eq 200 ]; then
+            echo "✅ Backup ping successful! Status: $http_code"
+          else
+            echo "⚠️ Backup ping failed! Status: $http_code"
+          fi
+          
+      - name: Log Success
+        run: |
+          echo "🎉 Supabase database successfully pinged on $(date)"
+          echo "Database will remain active for another 7 days!"
