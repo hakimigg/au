@@ -17,8 +17,12 @@ class SupabaseDatabase {
 
     async init() {
         try {
-            // Clear old localStorage data to force sync with Supabase
-            this.clearOldLocalStorage();
+            // Only clear localStorage if it's the first time or if explicitly requested
+            const shouldClearCache = localStorage.getItem('force_refresh') === 'true';
+            if (shouldClearCache) {
+                this.clearOldLocalStorage();
+                localStorage.removeItem('force_refresh');
+            }
             
             // Load data from Supabase
             await this.loadCompaniesFromSupabase();
@@ -147,29 +151,44 @@ class SupabaseDatabase {
 
     async deleteCompany(id) {
         try {
+            console.log(`🗑️ Attempting to delete company with ID: ${id}`);
+            
             // Check if company has products
             const productsInCompany = this.products.filter(p => p.company === id);
             if (productsInCompany.length > 0) {
-                throw new Error('Cannot delete company with existing products');
+                throw new Error(`Cannot delete company with existing products (${productsInCompany.length} products found)`);
             }
 
             if (this.isOnline) {
-                const { error } = await supabase
+                console.log('📡 Deleting from Supabase...');
+                const { error, data } = await supabase
                     .from('companies')
                     .delete()
-                    .eq('id', id);
+                    .eq('id', id)
+                    .select();
 
-                if (error) throw error;
+                if (error) {
+                    console.error('Supabase delete error:', error);
+                    throw error;
+                }
+                
+                console.log('✅ Successfully deleted from Supabase:', data);
             } else {
+                console.log('📱 Offline - marking for sync');
                 this.markForSync('companies', 'delete', { id });
             }
 
             // Remove from local data
+            const beforeCount = this.companies.length;
             this.companies = this.companies.filter(c => c.id !== id);
+            const afterCount = this.companies.length;
+            
+            console.log(`📊 Local companies count: ${beforeCount} → ${afterCount}`);
+            
             this.saveCompaniesToLocalStorage();
             return true;
         } catch (error) {
-            console.error('Error deleting company:', error);
+            console.error('❌ Error deleting company:', error);
             throw error;
         }
     }
@@ -298,23 +317,38 @@ class SupabaseDatabase {
 
     async deleteProduct(id) {
         try {
+            console.log(`🗑️ Attempting to delete product with ID: ${id}`);
+            
             if (this.isOnline) {
-                const { error } = await supabase
+                console.log('📡 Deleting from Supabase...');
+                const { error, data } = await supabase
                     .from('products')
                     .delete()
-                    .eq('id', id);
+                    .eq('id', id)
+                    .select();
 
-                if (error) throw error;
+                if (error) {
+                    console.error('Supabase delete error:', error);
+                    throw error;
+                }
+                
+                console.log('✅ Successfully deleted from Supabase:', data);
             } else {
+                console.log('📱 Offline - marking for sync');
                 this.markForSync('products', 'delete', { id });
             }
 
             // Remove from local data
+            const beforeCount = this.products.length;
             this.products = this.products.filter(p => p.id !== id);
+            const afterCount = this.products.length;
+            
+            console.log(`📊 Local products count: ${beforeCount} → ${afterCount}`);
+            
             this.saveProductsToLocalStorage();
             return true;
         } catch (error) {
-            console.error('Error deleting product:', error);
+            console.error('❌ Error deleting product:', error);
             throw error;
         }
     }
@@ -366,9 +400,12 @@ class SupabaseDatabase {
             // Clear sync queue
             localStorage.removeItem('sync_queue');
             
-            // Reload data from Supabase
-            await this.loadCompaniesFromSupabase();
-            await this.loadProductsFromSupabase();
+            // Only reload data if there were actual sync operations
+            if (syncQueue.length > 0) {
+                console.log(`🔄 Synced ${syncQueue.length} operations, reloading data...`);
+                await this.loadCompaniesFromSupabase();
+                await this.loadProductsFromSupabase();
+            }
         } catch (error) {
             console.error('Sync failed:', error);
         }
@@ -430,7 +467,7 @@ class SupabaseDatabase {
     // Force refresh from Supabase
     async forceRefresh() {
         console.log('🔄 Force refreshing data from Supabase...');
-        this.clearOldLocalStorage();
+        localStorage.setItem('force_refresh', 'true');
         await this.init();
         
         // Trigger UI refresh if admin panel is loaded
@@ -498,9 +535,9 @@ window.refreshDatabase = () => {
     return window.database.forceRefresh();
 };
 
-// Auto-refresh every 30 seconds when online
-setInterval(() => {
-    if (navigator.onLine && window.database) {
-        window.database.syncWithSupabase();
-    }
-}, 30000);
+// Auto-refresh every 30 seconds when online (DISABLED for debugging)
+// setInterval(() => {
+//     if (navigator.onLine && window.database) {
+//         window.database.syncWithSupabase();
+//     }
+// }, 30000);

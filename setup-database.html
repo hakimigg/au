@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Database Setup - Beta Website</title>
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(135deg, #f8f6f0 0%, #f5f1e8 100%);
+            margin: 0;
+            padding: 2rem;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .setup-container {
+            background: white;
+            border-radius: 20px;
+            padding: 3rem;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            text-align: center;
+            max-width: 600px;
+            width: 100%;
+        }
+        h1 {
+            color: #1e293b;
+            margin-bottom: 1rem;
+            font-size: 2.5rem;
+            font-weight: 300;
+        }
+        p {
+            color: #64748b;
+            margin-bottom: 2rem;
+            font-size: 1.1rem;
+            line-height: 1.6;
+        }
+        .setup-btn {
+            background: linear-gradient(135deg, #d4a574, #b8860b);
+            color: white;
+            border: none;
+            padding: 1rem 2rem;
+            border-radius: 50px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 8px 25px rgba(184, 134, 11, 0.4);
+            margin: 0.5rem;
+        }
+        .setup-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 12px 35px rgba(184, 134, 11, 0.5);
+        }
+        .setup-btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+        .status {
+            margin-top: 2rem;
+            padding: 1rem;
+            border-radius: 10px;
+            font-weight: 500;
+        }
+        .status.loading {
+            background: #e0f2fe;
+            color: #0277bd;
+        }
+        .status.success {
+            background: #e8f5e8;
+            color: #2e7d32;
+        }
+        .status.error {
+            background: #ffebee;
+            color: #c62828;
+        }
+        .links {
+            margin-top: 2rem;
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+        .link-btn {
+            background: transparent;
+            color: #d4a574;
+            border: 2px solid #d4a574;
+            padding: 0.75rem 1.5rem;
+            border-radius: 25px;
+            text-decoration: none;
+            font-weight: 500;
+            transition: all 0.3s ease;
+        }
+        .link-btn:hover {
+            background: #d4a574;
+            color: white;
+            transform: translateY(-2px);
+        }
+    </style>
+</head>
+<body>
+    <div class="setup-container">
+        <h1>🗄️ Database Setup</h1>
+        <p>Initialize your Beta Website database with sample companies and products. This will add demo data that you can manage through the admin panel.</p>
+        
+        <button id="populateBtn" class="setup-btn" onclick="runPopulation()">
+            🚀 Populate Database
+        </button>
+        
+        <button id="clearBtn" class="setup-btn" onclick="clearDatabase()" style="background: linear-gradient(135deg, #ef4444, #dc2626);">
+            🗑️ Clear Database
+        </button>
+        
+        <div id="status" class="status" style="display: none;"></div>
+        
+        <div class="links">
+            <a href="index.html" class="link-btn">🏠 Main Website</a>
+            <a href="admin.html" class="link-btn">⚙️ Admin Panel</a>
+        </div>
+    </div>
+
+    <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
+    <script src="supabase-config.js"></script>
+    <script src="populate-database.js"></script>
+    
+    <script>
+        function showStatus(message, type) {
+            const status = document.getElementById('status');
+            status.textContent = message;
+            status.className = `status ${type}`;
+            status.style.display = 'block';
+        }
+
+        async function runPopulation() {
+            const btn = document.getElementById('populateBtn');
+            btn.disabled = true;
+            btn.textContent = '⏳ Populating...';
+            
+            showStatus('🔄 Initializing database population...', 'loading');
+            
+            try {
+                const result = await populateDatabase();
+                
+                if (result.success) {
+                    showStatus(`✅ Success! Added ${result.companies} companies and ${result.products} products to the database.`, 'success');
+                    btn.textContent = '✅ Database Populated';
+                } else {
+                    showStatus(`❌ Failed: ${result.error}`, 'error');
+                    btn.disabled = false;
+                    btn.textContent = '🚀 Populate Database';
+                }
+            } catch (error) {
+                showStatus(`❌ Error: ${error.message}`, 'error');
+                btn.disabled = false;
+                btn.textContent = '🚀 Populate Database';
+            }
+        }
+
+        async function clearDatabase() {
+            if (!confirm('Are you sure you want to clear all data from the database? This action cannot be undone.')) {
+                return;
+            }
+            
+            const btn = document.getElementById('clearBtn');
+            btn.disabled = true;
+            btn.textContent = '⏳ Clearing...';
+            
+            showStatus('🔄 Clearing database...', 'loading');
+            
+            try {
+                // Wait for database to be ready
+                if (!window.database) {
+                    await new Promise(resolve => {
+                        const checkDatabase = () => {
+                            if (window.database) {
+                                resolve();
+                            } else {
+                                setTimeout(checkDatabase, 100);
+                            }
+                        };
+                        checkDatabase();
+                    });
+                }
+
+                // Delete all products first
+                const products = window.database.getProducts();
+                for (const product of products) {
+                    try {
+                        await window.database.deleteProduct(product.id);
+                        console.log(`Deleted product: ${product.name}`);
+                    } catch (error) {
+                        console.error(`Failed to delete product ${product.name}:`, error);
+                    }
+                }
+
+                // Then delete all companies
+                const companies = window.database.getCompanies();
+                for (const company of companies) {
+                    try {
+                        await window.database.deleteCompany(company.id);
+                        console.log(`Deleted company: ${company.name}`);
+                    } catch (error) {
+                        console.error(`Failed to delete company ${company.name}:`, error);
+                    }
+                }
+                
+                // Clear localStorage
+                localStorage.removeItem('website_companies');
+                localStorage.removeItem('website_products');
+                localStorage.removeItem('sync_queue');
+                
+                showStatus('✅ Database cleared successfully!', 'success');
+                btn.textContent = '✅ Database Cleared';
+                
+                // Re-enable populate button
+                document.getElementById('populateBtn').disabled = false;
+                document.getElementById('populateBtn').textContent = '🚀 Populate Database';
+                
+            } catch (error) {
+                showStatus(`❌ Error clearing database: ${error.message}`, 'error');
+                btn.disabled = false;
+                btn.textContent = '🗑️ Clear Database';
+            }
+        }
+
+        // Check database status on load
+        window.addEventListener('load', async () => {
+            try {
+                // Wait for database to initialize
+                await new Promise(resolve => {
+                    const checkDatabase = () => {
+                        if (window.database) {
+                            resolve();
+                        } else {
+                            setTimeout(checkDatabase, 100);
+                        }
+                    };
+                    checkDatabase();
+                });
+
+                const stats = window.database.getStats();
+                if (stats.totalProducts > 0 || stats.totalCompanies > 0) {
+                    showStatus(`📊 Current database: ${stats.totalCompanies} companies, ${stats.totalProducts} products`, 'success');
+                } else {
+                    showStatus('📭 Database is empty. Click "Populate Database" to add sample data.', 'loading');
+                }
+            } catch (error) {
+                showStatus('⚠️ Unable to check database status', 'error');
+            }
+        });
+    </script>
+</body>
+</html>

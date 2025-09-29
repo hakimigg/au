@@ -88,6 +88,11 @@ class AdminPanel {
                 this.closeModals();
             }
         });
+
+        // File upload functionality
+        setTimeout(() => {
+            this.setupFileUpload();
+        }, 100);
     }
 
     checkAuthStatus() {
@@ -144,6 +149,7 @@ class AdminPanel {
         this.loadProducts();
         this.loadCompanies();
         this.loadCompanyOptions();
+        this.loadSettings();
     }
 
     showError(message) {
@@ -186,7 +192,6 @@ class AdminPanel {
         document.getElementById('totalProducts').textContent = stats.totalProducts;
         document.getElementById('totalCompanies').textContent = stats.totalCompanies;
         document.getElementById('inStockProducts').textContent = stats.inStockProducts;
-        document.getElementById('totalValue').textContent = `$${stats.totalValue}`;
     }
 
     loadProducts() {
@@ -201,8 +206,7 @@ class AdminPanel {
                 <tr>
                     <td>${product.name}</td>
                     <td>${company ? company.name : product.company}</td>
-                    <td>$${product.price.toFixed(2)}</td>
-                    <td>${product.stock}</td>
+                    <td>${product.price.toFixed(2)} DA</td>
                     <td>
                         <button class="action-btn edit-btn" onclick="adminPanel.editProduct('${product.id}')">Edit</button>
                         <button class="action-btn delete-btn" onclick="adminPanel.deleteProduct('${product.id}')">Delete</button>
@@ -259,15 +263,24 @@ class AdminPanel {
             document.getElementById('productName').value = product.name;
             document.getElementById('productCompany').value = product.company;
             document.getElementById('productPrice').value = product.price;
-            document.getElementById('productStock').value = product.stock;
             document.getElementById('productDescription').value = product.description;
-            document.getElementById('productPhoto').value = product.photos[0] || '';
+            
+            // Handle existing product photo
+            if (product.photos && product.photos.length > 0) {
+                this.showImagePreview(product.photos[0]);
+            }
         } else {
             form.reset();
+            this.clearImagePreview();
         }
 
         modal.style.display = 'block';
         document.body.style.overflow = 'hidden';
+        
+        // Setup file upload for this modal
+        setTimeout(() => {
+            this.setupFileUpload();
+        }, 50);
     }
 
     showCompanyModal(company = null) {
@@ -308,9 +321,9 @@ class AdminPanel {
             name: formData.get('name'),
             company: formData.get('company'),
             price: parseFloat(formData.get('price')),
-            stock: parseInt(formData.get('stock')),
+            stock: 1, // Default stock value since we removed the field
             description: formData.get('description'),
-            photos: [formData.get('photo') || 'https://images.unsplash.com/photo-1560472354-b33ff0c44a43?w=400&h=300&fit=crop'],
+            photos: this.currentImageUrl ? [this.currentImageUrl] : ['https://images.unsplash.com/photo-1560472354-b33ff0c44a43?w=400&h=300&fit=crop'],
             tags: []
         };
 
@@ -444,6 +457,174 @@ class AdminPanel {
         setTimeout(() => {
             notification.classList.remove('show');
         }, 3000);
+    }
+
+    setupFileUpload() {
+        const chooseBtn = document.getElementById('choosePhotoBtn');
+        const fileInput = document.getElementById('productPhoto');
+        const changeBtn = document.getElementById('changePhotoBtn');
+        const removeBtn = document.getElementById('removePhotoBtn');
+
+        if (!chooseBtn || !fileInput) {
+            console.log('Choose photo button or file input not found');
+            return;
+        }
+
+        // Ensure file input is hidden
+        fileInput.style.display = 'none';
+
+        // Choose photo button click
+        chooseBtn.addEventListener('click', () => {
+            fileInput.click();
+        });
+
+        // Change photo button click
+        if (changeBtn) {
+            changeBtn.addEventListener('click', () => {
+                fileInput.click();
+            });
+        }
+
+        // File input change
+        fileInput.addEventListener('change', (e) => {
+            const file = e.target.files[0];
+            if (file) {
+                this.handleFileUpload(file);
+            }
+        });
+
+        // Remove photo button
+        if (removeBtn) {
+            removeBtn.addEventListener('click', () => {
+                this.clearImagePreview();
+            });
+        }
+    }
+
+    handleFileUpload(file) {
+        // Validate file type
+        if (!file.type.startsWith('image/')) {
+            this.showNotification('Please select an image file', 'error');
+            return;
+        }
+
+        // Validate file size (5MB max)
+        if (file.size > 5 * 1024 * 1024) {
+            this.showNotification('File size must be less than 5MB', 'error');
+            return;
+        }
+
+        // Create preview
+        const reader = new FileReader();
+        reader.onload = (e) => {
+            this.showImagePreview(e.target.result);
+            this.currentImageUrl = e.target.result; // Store base64 for now
+        };
+        reader.readAsDataURL(file);
+    }
+
+    showImagePreview(imageUrl) {
+        const chooseBtn = document.getElementById('choosePhotoBtn');
+        const photoPreview = document.getElementById('photoPreview');
+        const previewImage = document.getElementById('previewImage');
+
+        if (chooseBtn && photoPreview && previewImage) {
+            chooseBtn.style.display = 'none';
+            photoPreview.style.display = 'flex';
+            previewImage.src = imageUrl;
+            this.currentImageUrl = imageUrl;
+        }
+    }
+
+    clearImagePreview() {
+        const chooseBtn = document.getElementById('choosePhotoBtn');
+        const photoPreview = document.getElementById('photoPreview');
+        const previewImage = document.getElementById('previewImage');
+        const fileInput = document.getElementById('productPhoto');
+
+        if (chooseBtn && photoPreview && previewImage) {
+            chooseBtn.style.display = 'block';
+            photoPreview.style.display = 'none';
+            previewImage.src = '';
+            this.currentImageUrl = null;
+            
+            if (fileInput) {
+                fileInput.value = '';
+            }
+        }
+    }
+
+    // Settings Methods
+    changeUsername() {
+        const newUsername = document.getElementById('newUsername').value.trim();
+        
+        if (!newUsername) {
+            this.showNotification('Please enter a new username', 'error');
+            return;
+        }
+        
+        if (newUsername.length < 3) {
+            this.showNotification('Username must be at least 3 characters long', 'error');
+            return;
+        }
+        
+        if (newUsername === this.currentUser.username) {
+            this.showNotification('New username must be different from current username', 'error');
+            return;
+        }
+        
+        // Update username
+        this.currentUser.username = newUsername;
+        localStorage.setItem('admin_user', JSON.stringify(this.currentUser));
+        
+        // Update display
+        document.getElementById('currentUsername').value = newUsername;
+        document.getElementById('newUsername').value = '';
+        
+        this.showNotification('Username changed successfully!', 'success');
+    }
+
+    changePassword() {
+        const currentPassword = document.getElementById('currentPassword').value;
+        const newPassword = document.getElementById('newPassword').value;
+        const confirmPassword = document.getElementById('confirmPassword').value;
+        
+        if (!currentPassword || !newPassword || !confirmPassword) {
+            this.showNotification('Please fill in all password fields', 'error');
+            return;
+        }
+        
+        if (currentPassword !== 'admin123') {
+            this.showNotification('Current password is incorrect', 'error');
+            return;
+        }
+        
+        if (newPassword !== confirmPassword) {
+            this.showNotification('New passwords do not match', 'error');
+            return;
+        }
+        
+        if (newPassword.length < 6) {
+            this.showNotification('New password must be at least 6 characters long', 'error');
+            return;
+        }
+        
+        // Save new password (in a real app, this would be hashed and sent to server)
+        localStorage.setItem('adminPassword', newPassword);
+        
+        // Clear form
+        document.getElementById('currentPassword').value = '';
+        document.getElementById('newPassword').value = '';
+        document.getElementById('confirmPassword').value = '';
+        
+        this.showNotification('Password changed successfully!', 'success');
+    }
+
+    loadSettings() {
+        // Load current username
+        if (this.currentUser && document.getElementById('currentUsername')) {
+            document.getElementById('currentUsername').value = this.currentUser.username;
+        }
     }
 }
 

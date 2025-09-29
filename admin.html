@@ -42,13 +42,6 @@
                     <p>Beta Website Management</p>
                 </div>
                 <div class="header-right">
-                    <button id="refreshBtn" class="refresh-btn" title="Sync with Database">
-                        <span class="refresh-icon">🔄</span>
-                        Sync
-                    </button>
-                    <div class="user-info">
-                        <span id="adminUsername">Admin</span>
-                    </div>
                     <button id="logoutBtn" class="logout-btn">Logout</button>
                 </div>
             </div>
@@ -60,16 +53,16 @@
             <aside class="admin-sidebar">
                 <nav class="sidebar-nav">
                     <button class="nav-btn active" data-section="dashboard">
-                        <span class="nav-icon">📊</span>
                         Dashboard
                     </button>
                     <button class="nav-btn" data-section="products">
-                        <span class="nav-icon">📦</span>
                         Products
                     </button>
                     <button class="nav-btn" data-section="companies">
-                        <span class="nav-icon">🏢</span>
                         Companies
+                    </button>
+                    <button class="nav-btn" data-section="settings">
+                        Settings
                     </button>
                 </nav>
             </aside>
@@ -85,31 +78,21 @@
                     
                     <div class="stats-grid">
                         <div class="stat-card">
-                            <div class="stat-icon">📦</div>
                             <div class="stat-info">
                                 <h3 id="totalProducts">0</h3>
                                 <p>Total Products</p>
                             </div>
                         </div>
                         <div class="stat-card">
-                            <div class="stat-icon">🏢</div>
                             <div class="stat-info">
                                 <h3 id="totalCompanies">0</h3>
                                 <p>Companies</p>
                             </div>
                         </div>
                         <div class="stat-card">
-                            <div class="stat-icon">✅</div>
                             <div class="stat-info">
                                 <h3 id="inStockProducts">0</h3>
-                                <p>In Stock</p>
-                            </div>
-                        </div>
-                        <div class="stat-card">
-                            <div class="stat-icon">💰</div>
-                            <div class="stat-info">
-                                <h3 id="totalValue">$0</h3>
-                                <p>Total Value</p>
+                                <p>In Stock Products</p>
                             </div>
                         </div>
                     </div>
@@ -128,8 +111,7 @@
                                 <tr>
                                     <th>Name</th>
                                     <th>Company</th>
-                                    <th>Price</th>
-                                    <th>Stock</th>
+                                    <th>Price (DA)</th>
                                     <th>Actions</th>
                                 </tr>
                             </thead>
@@ -163,6 +145,50 @@
                         </table>
                     </div>
                 </section>
+
+                <!-- Settings Section -->
+                <section id="settingsSection" class="content-section">
+                    <div class="section-header">
+                        <h2>Settings</h2>
+                        <p>Configure your admin panel preferences</p>
+                    </div>
+                    
+                    <div class="settings-container">
+                        <div class="settings-grid">
+                            <!-- Account Settings -->
+                            <div class="settings-card">
+                                <h3>Account Settings</h3>
+                                <div class="setting-item">
+                                    <label for="currentUsername">Current Username</label>
+                                    <input type="text" id="currentUsername" value="admin" class="setting-input" readonly>
+                                </div>
+                                <div class="setting-item">
+                                    <label for="newUsername">New Username</label>
+                                    <input type="text" id="newUsername" class="setting-input" placeholder="Enter new username">
+                                </div>
+                                <button class="save-btn" onclick="adminPanel.changeUsername()">Change Username</button>
+                            </div>
+
+                            <!-- Security Settings -->
+                            <div class="settings-card">
+                                <h3>Security</h3>
+                                <div class="setting-item">
+                                    <label for="currentPassword">Current Password</label>
+                                    <input type="password" id="currentPassword" class="setting-input" placeholder="Enter current password">
+                                </div>
+                                <div class="setting-item">
+                                    <label for="newPassword">New Password</label>
+                                    <input type="password" id="newPassword" class="setting-input" placeholder="Enter new password">
+                                </div>
+                                <div class="setting-item">
+                                    <label for="confirmPassword">Confirm New Password</label>
+                                    <input type="password" id="confirmPassword" class="setting-input" placeholder="Confirm new password">
+                                </div>
+                                <button class="save-btn" onclick="adminPanel.changePassword()">Change Password</button>
+                            </div>
+                        </div>
+                    </div>
+                </section>
             </div>
         </main>
     </div>
@@ -189,12 +215,8 @@
                 </div>
                 <div class="form-row">
                     <div class="form-group">
-                        <label for="productPrice">Price ($)</label>
+                        <label for="productPrice">Price (DA)</label>
                         <input type="number" id="productPrice" name="price" step="0.01" required>
-                    </div>
-                    <div class="form-group">
-                        <label for="productStock">Stock</label>
-                        <input type="number" id="productStock" name="stock" required>
                     </div>
                 </div>
                 <div class="form-group">
@@ -202,8 +224,20 @@
                     <textarea id="productDescription" name="description" rows="3" required></textarea>
                 </div>
                 <div class="form-group">
-                    <label for="productPhoto">Photo URL</label>
-                    <input type="url" id="productPhoto" name="photo" placeholder="https://example.com/image.jpg">
+                    <label for="productPhoto">Product Photo</label>
+                    <div class="photo-section">
+                        <button type="button" class="choose-photo-btn" id="choosePhotoBtn">
+                            Choose Photo
+                        </button>
+                        <input type="file" id="productPhoto" name="photo" accept="image/*" style="display: none;">
+                        <div class="photo-preview" id="photoPreview" style="display: none;">
+                            <img id="previewImage" src="" alt="Preview">
+                            <div class="preview-actions">
+                                <button type="button" class="change-photo-btn" id="changePhotoBtn">Change Photo</button>
+                                <button type="button" class="remove-photo-btn" id="removePhotoBtn">Remove</button>
+                            </div>
+                        </div>
+                    </div>
                 </div>
                 <div class="modal-actions">
                     <button type="button" class="cancel-btn">Cancel</button>

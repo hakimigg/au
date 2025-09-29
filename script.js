@@ -198,7 +198,7 @@ class WebsiteApp {
                 <div class="product-info">
                     <h3 class="product-name">${product.name}</h3>
                     <p class="product-company">${this.getCompanyName(product.company)}</p>
-                    <p class="product-price">$${product.price.toFixed(2)}</p>
+                    <p class="product-price">${product.price.toFixed(2)}</p>
                     <p class="product-description">${this.truncateText(product.description, 100)}</p>
                     <p class="product-stock">${product.stock} in stock</p>
                     <button class="view-details-btn" onclick="event.stopPropagation(); app.showProductDetails('${product.id}')">
@@ -261,7 +261,7 @@ class WebsiteApp {
                 <div>
                     <h2 style="font-size: 2rem; font-weight: 600; color: #1e293b; margin-bottom: 0.5rem;">${product.name}</h2>
                     <p style="color: #64748b; font-size: 1.1rem; margin-bottom: 1rem;">${company ? company.name : product.company}</p>
-                    <p style="font-size: 2rem; font-weight: 700; color: #d4a574; margin-bottom: 1.5rem;">$${product.price.toFixed(2)}</p>
+                    <p style="font-size: 2rem; font-weight: 700; color: #d4a574; margin-bottom: 1.5rem;">${product.price.toFixed(2)} DA</p>
                     <p style="color: #64748b; line-height: 1.6; margin-bottom: 1.5rem;">${product.description}</p>
                     <p style="color: #059669; font-weight: 600; margin-bottom: 1.5rem;">${product.stock} in stock</p>
                     ${Object.keys(product.specs || {}).length > 0 ? `
