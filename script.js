@@ -58,23 +58,21 @@ class WebsiteApp {
         document.querySelectorAll('a[href^="#"]').forEach(anchor => {
             anchor.addEventListener('click', (e) => {
                 e.preventDefault();
-                const targetId = anchor.getAttribute('href').substring(1);
-                this.scrollToSection(targetId);
+                const targetId = anchor.getAttribute('href');
+                if (targetId === '#') return;
+                
+                const targetElement = document.querySelector(targetId);
+                if (targetElement) {
+                    const headerHeight = document.querySelector('.header').offsetHeight;
+                    const elementPosition = targetElement.getBoundingClientRect().top + window.pageYOffset - headerHeight;
+                    
+                    window.scrollTo({
+                        top: elementPosition,
+                        behavior: 'smooth'
+                    });
+                }
             });
         });
-    }
-
-    scrollToSection(sectionId) {
-        const element = document.getElementById(sectionId);
-        if (element) {
-            const headerHeight = document.querySelector('.header').offsetHeight;
-            const elementPosition = element.offsetTop - headerHeight;
-            
-            window.scrollTo({
-                top: elementPosition,
-                behavior: 'smooth'
-            });
-        }
     }
 
     async waitForDatabase() {
@@ -294,10 +292,17 @@ class WebsiteApp {
     }
 }
 
-// Utility functions
+// Utility function to scroll to section with header offset
 function scrollToSection(sectionId) {
-    if (window.app) {
-        window.app.scrollToSection(sectionId);
+    const element = document.getElementById(sectionId);
+    if (element) {
+        const headerHeight = document.querySelector('.header').offsetHeight;
+        const elementPosition = element.getBoundingClientRect().top + window.pageYOffset - headerHeight;
+        
+        window.scrollTo({
+            top: elementPosition,
+            behavior: 'smooth'
+        });
     }
 }
 
