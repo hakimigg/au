@@ -1,17 +1,12 @@
--- Database Schema for Beta Website
--- Run this in your Supabase SQL Editor
-
--- Create companies table
 CREATE TABLE IF NOT EXISTS companies (
     id TEXT PRIMARY KEY,
     name TEXT NOT NULL UNIQUE,
-    description TEXT NOT NULL,
-    logo TEXT,
+    description TEXT,
+    photo TEXT,
     created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
     updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
 );
 
--- Create products table
 CREATE TABLE IF NOT EXISTS products (
     id TEXT PRIMARY KEY,
     name TEXT NOT NULL,
@@ -26,17 +21,14 @@ CREATE TABLE IF NOT EXISTS products (
     updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
 );
 
--- Create indexes for better performance
 CREATE INDEX IF NOT EXISTS idx_products_company ON products(company);
 CREATE INDEX IF NOT EXISTS idx_products_price ON products(price);
 CREATE INDEX IF NOT EXISTS idx_products_stock ON products(stock);
 CREATE INDEX IF NOT EXISTS idx_companies_name ON companies(name);
 
--- Enable Row Level Security (RLS)
 ALTER TABLE companies ENABLE ROW LEVEL SECURITY;
 ALTER TABLE products ENABLE ROW LEVEL SECURITY;
 
--- Create policies for companies table
 CREATE POLICY "Anyone can view companies" ON companies
     FOR SELECT USING (true);
 
@@ -49,7 +41,6 @@ CREATE POLICY "Authenticated users can update companies" ON companies
 CREATE POLICY "Authenticated users can delete companies" ON companies
     FOR DELETE USING (auth.role() = 'authenticated');
 
--- Create policies for products table
 CREATE POLICY "Anyone can view products" ON products
     FOR SELECT USING (true);
 
@@ -62,7 +53,6 @@ CREATE POLICY "Authenticated users can update products" ON products
 CREATE POLICY "Authenticated users can delete products" ON products
     FOR DELETE USING (auth.role() = 'authenticated');
 
--- Create function to update updated_at timestamp
 CREATE OR REPLACE FUNCTION update_updated_at_column()
 RETURNS TRIGGER AS $$
 BEGIN
@@ -71,14 +61,12 @@ BEGIN
 END;
 $$ language 'plpgsql';
 
--- Create triggers to automatically update updated_at
 CREATE TRIGGER update_companies_updated_at BEFORE UPDATE ON companies
     FOR EACH ROW EXECUTE FUNCTION update_updated_at_column();
 
 CREATE TRIGGER update_products_updated_at BEFORE UPDATE ON products
     FOR EACH ROW EXECUTE FUNCTION update_updated_at_column();
 
--- Insert default companies
 INSERT INTO companies (id, name, description) VALUES
     ('nokia', 'Nokia', 'Leading telecommunications and technology company'),
     ('samsung', 'Samsung', 'Global technology conglomerate'),
@@ -86,7 +74,6 @@ INSERT INTO companies (id, name, description) VALUES
     ('premium', 'Premium', 'Luxury and premium products')
 ON CONFLICT (id) DO NOTHING;
 
--- Insert default products
 INSERT INTO products (id, name, company, price, stock, description, photos, tags, specs) VALUES
     ('p1', 'Nokia Smartphone Pro', 'nokia', 299.99, 45, 
      'Advanced smartphone with cutting-edge technology, featuring a powerful processor, exceptional camera system, and long-lasting battery life.',

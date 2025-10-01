@@ -1,4 +1,3 @@
-// Main JavaScript file for the website
 class WebsiteApp {
     constructor() {
         this.currentFilter = 'all';
@@ -7,7 +6,6 @@ class WebsiteApp {
     }
 
     init() {
-        // Wait for DOM to be ready
         if (document.readyState === 'loading') {
             document.addEventListener('DOMContentLoaded', () => this.initializeApp());
         } else {
@@ -19,17 +17,14 @@ class WebsiteApp {
         this.setupEventListeners();
         this.setupSmoothScrolling();
         
-        // Wait for database to be ready
         await this.waitForDatabase();
         
-        // Load data
         this.loadCompanies();
         this.loadProducts();
         this.hideLoading();
     }
 
     setupEventListeners() {
-        // Modal close events
         const modal = document.getElementById('productModal');
         const closeBtn = document.querySelector('.modal-close');
         
@@ -45,7 +40,6 @@ class WebsiteApp {
             });
         }
 
-        // Escape key to close modal
         document.addEventListener('keydown', (e) => {
             if (e.key === 'Escape') {
                 this.closeModal();
@@ -54,7 +48,6 @@ class WebsiteApp {
     }
 
     setupSmoothScrolling() {
-        // Smooth scrolling for navigation links
         document.querySelectorAll('a[href^="#"]').forEach(anchor => {
             anchor.addEventListener('click', (e) => {
                 e.preventDefault();
@@ -76,9 +69,8 @@ class WebsiteApp {
     }
 
     async waitForDatabase() {
-        // Wait for database to be initialized
         let attempts = 0;
-        const maxAttempts = 50; // 5 seconds max
+        const maxAttempts = 50;
         
         while (!window.database && attempts < maxAttempts) {
             await new Promise(resolve => setTimeout(resolve, 100));
@@ -90,7 +82,6 @@ class WebsiteApp {
             return;
         }
         
-        // Wait a bit more for database to load data
         attempts = 0;
         while ((window.database.companies.length === 0 || window.database.products.length === 0) && attempts < maxAttempts) {
             await new Promise(resolve => setTimeout(resolve, 100));
@@ -220,13 +211,11 @@ class WebsiteApp {
     filterByCompany(companyId) {
         this.currentFilter = companyId;
         
-        // Update filter buttons
         document.querySelectorAll('.filter-btn').forEach(btn => {
             btn.classList.remove('active');
         });
         document.querySelector(`[onclick="app.filterByCompany('${companyId}')"]`)?.classList.add('active');
 
-        // Filter and render products
         let products;
         if (companyId === 'all') {
             products = database.getAvailableProducts();
@@ -292,7 +281,6 @@ class WebsiteApp {
     }
 }
 
-// Utility function to scroll to section with header offset
 function scrollToSection(sectionId) {
     const element = document.getElementById(sectionId);
     if (element) {
@@ -306,5 +294,4 @@ function scrollToSection(sectionId) {
     }
 }
 
-// Initialize the app
 window.app = new WebsiteApp();

@@ -1,4 +1,3 @@
-// Simple JSON-based database for the website
 class Database {
     constructor() {
         this.companies = [
@@ -6,25 +5,25 @@ class Database {
                 id: 'nokia',
                 name: 'Nokia',
                 description: 'Leading telecommunications and technology company',
-                logo: null
+                photo: null
             },
             {
                 id: 'samsung',
                 name: 'Samsung',
                 description: 'Global technology conglomerate',
-                logo: null
+                photo: null
             },
             {
                 id: 'apple',
                 name: 'Apple',
                 description: 'Premium consumer electronics and software',
-                logo: null
+                photo: null
             },
             {
                 id: 'premium',
                 name: 'Premium',
                 description: 'Luxury and premium products',
-                logo: null
+                photo: null
             }
         ];
 

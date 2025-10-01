@@ -1,11 +1,7 @@
-// Supabase Configuration
 const SUPABASE_URL = 'https://hesycproljmuaimqcptn.supabase.co';
 const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imhlc3ljcHJvbGptdWFpbXFjcHRuIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTkwOTcwODEsImV4cCI6MjA3NDY3MzA4MX0.bmnCs2BELUZBSWn3A8Me3PE84zytAtf388uhmg6CyoA';
 
-// Initialize Supabase client
 const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
-
-// Database class with Supabase integration
 class SupabaseDatabase {
     constructor() {
         this.companies = [];
@@ -17,14 +13,11 @@ class SupabaseDatabase {
 
     async init() {
         try {
-            // Only clear localStorage if it's the first time or if explicitly requested
             const shouldClearCache = localStorage.getItem('force_refresh') === 'true';
             if (shouldClearCache) {
                 this.clearOldLocalStorage();
                 localStorage.removeItem('force_refresh');
             }
-            
-            // Load data from Supabase
             await this.loadCompaniesFromSupabase();
             await this.loadProductsFromSupabase();
             
@@ -46,7 +39,6 @@ class SupabaseDatabase {
         });
     }
 
-    // Companies methods
     async loadCompaniesFromSupabase() {
         try {
             console.log('🏢 Loading companies from Supabase...');
@@ -65,23 +57,20 @@ class SupabaseDatabase {
             this.saveCompaniesToLocalStorage();
         } catch (error) {
             console.error('Error loading companies:', error);
-            throw error;
         }
     }
 
     async addCompany(companyData) {
         try {
-            // Validate input
-            if (!companyData.name || !companyData.description) {
-                throw new Error('Company name and description are required');
+            if (!companyData.name) {
+                throw new Error('Company name is required');
             }
 
-            // Sanitize input
             const sanitizedData = {
                 id: this.generateSecureId(),
                 name: this.sanitizeInput(companyData.name),
-                description: this.sanitizeInput(companyData.description),
-                logo: companyData.logo || null,
+                description: companyData.description ? this.sanitizeInput(companyData.description) : null,
+                photo: companyData.photo || null,
                 created_at: new Date().toISOString()
             };
 
@@ -95,7 +84,6 @@ class SupabaseDatabase {
                 
                 this.companies.push(data[0]);
             } else {
-                // Store locally for sync later
                 this.companies.push(sanitizedData);
                 this.markForSync('companies', 'insert', sanitizedData);
             }
@@ -110,16 +98,14 @@ class SupabaseDatabase {
 
     async updateCompany(id, companyData) {
         try {
-            // Validate input
-            if (!companyData.name || !companyData.description) {
-                throw new Error('Company name and description are required');
+            if (!companyData.name) {
+                throw new Error('Company name is required');
             }
 
-            // Sanitize input
             const sanitizedData = {
                 name: this.sanitizeInput(companyData.name),
-                description: this.sanitizeInput(companyData.description),
-                logo: companyData.logo || null,
+                description: companyData.description ? this.sanitizeInput(companyData.description) : null,
+                photo: companyData.photo || null,
                 updated_at: new Date().toISOString()
             };
 
@@ -135,7 +121,6 @@ class SupabaseDatabase {
                 this.markForSync('companies', 'update', { id, ...sanitizedData });
             }
 
-            // Update local data
             const index = this.companies.findIndex(c => c.id === id);
             if (index !== -1) {
                 this.companies[index] = { ...this.companies[index], ...sanitizedData };
@@ -153,7 +138,6 @@ class SupabaseDatabase {
         try {
             console.log(`🗑️ Attempting to delete company with ID: ${id}`);
             
-            // Check if company has products
             const productsInCompany = this.products.filter(p => p.company === id);
             if (productsInCompany.length > 0) {
                 throw new Error(`Cannot delete company with existing products (${productsInCompany.length} products found)`);
@@ -178,7 +162,6 @@ class SupabaseDatabase {
                 this.markForSync('companies', 'delete', { id });
             }
 
-            // Remove from local data
             const beforeCount = this.companies.length;
             this.companies = this.companies.filter(c => c.id !== id);
             const afterCount = this.companies.length;
@@ -193,7 +176,6 @@ class SupabaseDatabase {
         }
     }
 
-    // Products methods
     async loadProductsFromSupabase() {
         try {
             console.log('📦 Loading products from Supabase...');
@@ -218,12 +200,10 @@ class SupabaseDatabase {
 
     async addProduct(productData) {
         try {
-            // Validate input
             if (!productData.name || !productData.company || !productData.price || !productData.stock) {
                 throw new Error('Product name, company, price, and stock are required');
             }
 
-            // Sanitize input
             const sanitizedData = {
                 id: this.generateSecureId(),
                 name: this.sanitizeInput(productData.name),
@@ -237,7 +217,6 @@ class SupabaseDatabase {
                 created_at: new Date().toISOString()
             };
 
-            // Validate price and stock
             if (sanitizedData.price < 0 || sanitizedData.stock < 0) {
                 throw new Error('Price and stock must be non-negative');
             }
@@ -266,12 +245,10 @@ class SupabaseDatabase {
 
     async updateProduct(id, productData) {
         try {
-            // Validate input
             if (!productData.name || !productData.company || !productData.price || !productData.stock) {
                 throw new Error('Product name, company, price, and stock are required');
             }
 
-            // Sanitize input
             const sanitizedData = {
                 name: this.sanitizeInput(productData.name),
                 company: this.sanitizeInput(productData.company),
@@ -284,7 +261,6 @@ class SupabaseDatabase {
                 updated_at: new Date().toISOString()
             };
 
-            // Validate price and stock
             if (sanitizedData.price < 0 || sanitizedData.stock < 0) {
                 throw new Error('Price and stock must be non-negative');
             }
@@ -301,7 +277,6 @@ class SupabaseDatabase {
                 this.markForSync('products', 'update', { id, ...sanitizedData });
             }
 
-            // Update local data
             const index = this.products.findIndex(p => p.id === id);
             if (index !== -1) {
                 this.products[index] = { ...this.products[index], ...sanitizedData };
@@ -338,7 +313,6 @@ class SupabaseDatabase {
                 this.markForSync('products', 'delete', { id });
             }
 
-            // Remove from local data
             const beforeCount = this.products.length;
             this.products = this.products.filter(p => p.id !== id);
             const afterCount = this.products.length;
@@ -353,7 +327,6 @@ class SupabaseDatabase {
         }
     }
 
-    // Utility methods
     generateSecureId() {
         return 'id_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
     }
@@ -397,10 +370,8 @@ class SupabaseDatabase {
                 }
             }
 
-            // Clear sync queue
             localStorage.removeItem('sync_queue');
             
-            // Only reload data if there were actual sync operations
             if (syncQueue.length > 0) {
                 console.log(`🔄 Synced ${syncQueue.length} operations, reloading data...`);
                 await this.loadCompaniesFromSupabase();
@@ -411,7 +382,6 @@ class SupabaseDatabase {
         }
     }
 
-    // Clear old localStorage data
     clearOldLocalStorage() {
         localStorage.removeItem('website_companies');
         localStorage.removeItem('website_products');
@@ -419,7 +389,6 @@ class SupabaseDatabase {
         console.log('🗑️ Cleared old localStorage data');
     }
 
-    // Local storage fallback
     loadFromLocalStorage() {
         console.log('📱 Loading from localStorage as fallback');
         const savedCompanies = localStorage.getItem('website_companies');
@@ -464,13 +433,11 @@ class SupabaseDatabase {
         }
     }
 
-    // Force refresh from Supabase
     async forceRefresh() {
         console.log('🔄 Force refreshing data from Supabase...');
         localStorage.setItem('force_refresh', 'true');
         await this.init();
         
-        // Trigger UI refresh if admin panel is loaded
         if (window.adminPanel) {
             window.adminPanel.loadDashboardStats();
             window.adminPanel.loadProducts();
@@ -478,14 +445,12 @@ class SupabaseDatabase {
             window.adminPanel.loadCompanyOptions();
         }
         
-        // Trigger main website refresh if loaded
         if (window.app) {
             window.app.loadCompanies();
             window.app.loadProducts();
         }
     }
 
-    // Public API methods (same as before)
     getCompanies() {
         return [...this.companies];
     }
@@ -527,17 +492,8 @@ class SupabaseDatabase {
     }
 }
 
-// Initialize database and expose refresh function
 window.database = new SupabaseDatabase();
 
-// Expose refresh function globally
 window.refreshDatabase = () => {
     return window.database.forceRefresh();
 };
-
-// Auto-refresh every 30 seconds when online (DISABLED for debugging)
-// setInterval(() => {
-//     if (navigator.onLine && window.database) {
-//         window.database.syncWithSupabase();
-//     }
-// }, 30000);

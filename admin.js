@@ -1,4 +1,3 @@
-// Admin Panel JavaScript
 class AdminPanel {
     constructor() {
         this.currentUser = null;
@@ -21,40 +20,21 @@ class AdminPanel {
     }
 
     setupEventListeners() {
-        // Login form
         const loginForm = document.getElementById('loginForm');
         if (loginForm) {
             loginForm.addEventListener('submit', (e) => this.handleLogin(e));
         }
 
-        // Logout button
         const logoutBtn = document.getElementById('logoutBtn');
         if (logoutBtn) {
             logoutBtn.addEventListener('click', () => this.handleLogout());
         }
 
-        // Refresh button
         const refreshBtn = document.getElementById('refreshBtn');
         if (refreshBtn) {
             refreshBtn.addEventListener('click', () => this.handleRefresh());
         }
 
-        // Navigation buttons
-        document.querySelectorAll('.nav-btn').forEach(btn => {
-            btn.addEventListener('click', (e) => this.switchSection(e.target.dataset.section));
-        });
-
-        // Add buttons
-        const addProductBtn = document.getElementById('addProductBtn');
-        const addCompanyBtn = document.getElementById('addCompanyBtn');
-        
-        if (addProductBtn) {
-            addProductBtn.addEventListener('click', () => this.showProductModal());
-        }
-        
-        if (addCompanyBtn) {
-            addCompanyBtn.addEventListener('click', () => this.showCompanyModal());
-        }
 
         // Modal close buttons
         document.querySelectorAll('.modal-close, .cancel-btn').forEach(btn => {
@@ -88,11 +68,6 @@ class AdminPanel {
                 this.closeModals();
             }
         });
-
-        // File upload functionality
-        setTimeout(() => {
-            this.setupFileUpload();
-        }, 100);
     }
 
     checkAuthStatus() {
@@ -144,12 +119,39 @@ class AdminPanel {
             usernameDisplay.textContent = this.currentUser.username;
         }
 
+        // Setup dashboard-specific event listeners
+        this.setupDashboardEventListeners();
+
         // Load initial data
         this.loadDashboardStats();
         this.loadProducts();
         this.loadCompanies();
         this.loadCompanyOptions();
         this.loadSettings();
+    }
+
+    setupDashboardEventListeners() {
+        // Navigation buttons
+        document.querySelectorAll('.nav-btn').forEach(btn => {
+            btn.addEventListener('click', (e) => this.switchSection(e.target.dataset.section));
+        });
+
+        // Add buttons
+        const addProductBtn = document.getElementById('addProductBtn');
+        const addCompanyBtn = document.getElementById('addCompanyBtn');
+        
+        if (addProductBtn) {
+            addProductBtn.addEventListener('click', () => this.showProductModal());
+        }
+        
+        if (addCompanyBtn) {
+            addCompanyBtn.addEventListener('click', () => this.showCompanyModal());
+        }
+
+        // Setup file upload functionality
+        setTimeout(() => {
+            this.setupFileUpload();
+        }, 100);
     }
 
     showError(message) {
@@ -267,20 +269,15 @@ class AdminPanel {
             
             // Handle existing product photo
             if (product.photos && product.photos.length > 0) {
-                this.showImagePreview(product.photos[0]);
+                this.showProductImagePreview(product.photos[0]);
             }
         } else {
             form.reset();
-            this.clearImagePreview();
+            this.clearProductImagePreview();
         }
 
         modal.style.display = 'block';
         document.body.style.overflow = 'hidden';
-        
-        // Setup file upload for this modal
-        setTimeout(() => {
-            this.setupFileUpload();
-        }, 50);
     }
 
     showCompanyModal(company = null) {
@@ -295,9 +292,15 @@ class AdminPanel {
         
         if (company) {
             document.getElementById('companyName').value = company.name;
-            document.getElementById('companyDescription').value = company.description;
+            document.getElementById('companyDescription').value = company.description || '';
+            
+            // Handle existing company photo
+            if (company.photo) {
+                this.showCompanyImagePreview(company.photo);
+            }
         } else {
             form.reset();
+            this.clearCompanyImagePreview();
         }
 
         modal.style.display = 'block';
@@ -321,9 +324,9 @@ class AdminPanel {
             name: formData.get('name'),
             company: formData.get('company'),
             price: parseFloat(formData.get('price')),
-            stock: 1, // Default stock value since we removed the field
+            stock: 1,
             description: formData.get('description'),
-            photos: this.currentImageUrl ? [this.currentImageUrl] : ['https://images.unsplash.com/photo-1560472354-b33ff0c44a43?w=400&h=300&fit=crop'],
+            photos: this.currentProductImageUrl ? [this.currentProductImageUrl] : ['https://images.unsplash.com/photo-1560472354-b33ff0c44a43?w=400&h=300&fit=crop'],
             tags: []
         };
 
@@ -353,7 +356,7 @@ class AdminPanel {
         const companyData = {
             name: formData.get('name'),
             description: formData.get('description'),
-            logo: null
+            photo: this.currentCompanyImageUrl || null
         };
 
         try {
@@ -460,6 +463,11 @@ class AdminPanel {
     }
 
     setupFileUpload() {
+        this.setupProductFileUpload();
+        this.setupCompanyFileUpload();
+    }
+
+    setupProductFileUpload() {
         const chooseBtn = document.getElementById('choosePhotoBtn');
         const fileInput = document.getElementById('productPhoto');
         const changeBtn = document.getElementById('changePhotoBtn');
@@ -470,60 +478,108 @@ class AdminPanel {
             return;
         }
 
-        // Ensure file input is hidden
         fileInput.style.display = 'none';
 
-        // Choose photo button click
         chooseBtn.addEventListener('click', () => {
             fileInput.click();
         });
 
-        // Change photo button click
         if (changeBtn) {
             changeBtn.addEventListener('click', () => {
                 fileInput.click();
             });
         }
 
-        // File input change
         fileInput.addEventListener('change', (e) => {
             const file = e.target.files[0];
             if (file) {
-                this.handleFileUpload(file);
+                this.handleProductFileUpload(file);
             }
         });
 
-        // Remove photo button
         if (removeBtn) {
             removeBtn.addEventListener('click', () => {
-                this.clearImagePreview();
+                this.clearProductImagePreview();
             });
         }
     }
 
-    handleFileUpload(file) {
-        // Validate file type
+    setupCompanyFileUpload() {
+        const chooseBtn = document.getElementById('chooseCompanyPhotoBtn');
+        const fileInput = document.getElementById('companyPhoto');
+        const changeBtn = document.getElementById('changeCompanyPhotoBtn');
+        const removeBtn = document.getElementById('removeCompanyPhotoBtn');
+
+        if (!chooseBtn || !fileInput) {
+            console.log('Choose company photo button or file input not found');
+            return;
+        }
+
+        fileInput.style.display = 'none';
+
+        chooseBtn.addEventListener('click', () => {
+            fileInput.click();
+        });
+
+        if (changeBtn) {
+            changeBtn.addEventListener('click', () => {
+                fileInput.click();
+            });
+        }
+
+        fileInput.addEventListener('change', (e) => {
+            const file = e.target.files[0];
+            if (file) {
+                this.handleCompanyFileUpload(file);
+            }
+        });
+
+        if (removeBtn) {
+            removeBtn.addEventListener('click', () => {
+                this.clearCompanyImagePreview();
+            });
+        }
+    }
+
+    handleProductFileUpload(file) {
         if (!file.type.startsWith('image/')) {
             this.showNotification('Please select an image file', 'error');
             return;
         }
 
-        // Validate file size (5MB max)
         if (file.size > 5 * 1024 * 1024) {
             this.showNotification('File size must be less than 5MB', 'error');
             return;
         }
 
-        // Create preview
         const reader = new FileReader();
         reader.onload = (e) => {
-            this.showImagePreview(e.target.result);
-            this.currentImageUrl = e.target.result; // Store base64 for now
+            this.showProductImagePreview(e.target.result);
+            this.currentProductImageUrl = e.target.result;
         };
         reader.readAsDataURL(file);
     }
 
-    showImagePreview(imageUrl) {
+    handleCompanyFileUpload(file) {
+        if (!file.type.startsWith('image/')) {
+            this.showNotification('Please select an image file', 'error');
+            return;
+        }
+
+        if (file.size > 5 * 1024 * 1024) {
+            this.showNotification('File size must be less than 5MB', 'error');
+            return;
+        }
+
+        const reader = new FileReader();
+        reader.onload = (e) => {
+            this.showCompanyImagePreview(e.target.result);
+            this.currentCompanyImageUrl = e.target.result;
+        };
+        reader.readAsDataURL(file);
+    }
+
+    showProductImagePreview(imageUrl) {
         const chooseBtn = document.getElementById('choosePhotoBtn');
         const photoPreview = document.getElementById('photoPreview');
         const previewImage = document.getElementById('previewImage');
@@ -532,11 +588,24 @@ class AdminPanel {
             chooseBtn.style.display = 'none';
             photoPreview.style.display = 'flex';
             previewImage.src = imageUrl;
-            this.currentImageUrl = imageUrl;
+            this.currentProductImageUrl = imageUrl;
         }
     }
 
-    clearImagePreview() {
+    showCompanyImagePreview(imageUrl) {
+        const chooseBtn = document.getElementById('chooseCompanyPhotoBtn');
+        const photoPreview = document.getElementById('companyPhotoPreview');
+        const previewImage = document.getElementById('companyPreviewImage');
+
+        if (chooseBtn && photoPreview && previewImage) {
+            chooseBtn.style.display = 'none';
+            photoPreview.style.display = 'flex';
+            previewImage.src = imageUrl;
+            this.currentCompanyImageUrl = imageUrl;
+        }
+    }
+
+    clearProductImagePreview() {
         const chooseBtn = document.getElementById('choosePhotoBtn');
         const photoPreview = document.getElementById('photoPreview');
         const previewImage = document.getElementById('previewImage');
@@ -546,7 +615,25 @@ class AdminPanel {
             chooseBtn.style.display = 'block';
             photoPreview.style.display = 'none';
             previewImage.src = '';
-            this.currentImageUrl = null;
+            this.currentProductImageUrl = null;
+            
+            if (fileInput) {
+                fileInput.value = '';
+            }
+        }
+    }
+
+    clearCompanyImagePreview() {
+        const chooseBtn = document.getElementById('chooseCompanyPhotoBtn');
+        const photoPreview = document.getElementById('companyPhotoPreview');
+        const previewImage = document.getElementById('companyPreviewImage');
+        const fileInput = document.getElementById('companyPhoto');
+
+        if (chooseBtn && photoPreview && previewImage) {
+            chooseBtn.style.display = 'block';
+            photoPreview.style.display = 'none';
+            previewImage.src = '';
+            this.currentCompanyImageUrl = null;
             
             if (fileInput) {
                 fileInput.value = '';
