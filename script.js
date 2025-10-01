@@ -249,10 +249,10 @@ class WebsiteApp {
         modalContent.innerHTML = `
             <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 2rem; align-items: start;">
                 <div>
-                    <img src="${product.photos[0] || 'https://images.unsplash.com/photo-1560472354-b33ff0c44a43?w=400&h=300&fit=crop'}" 
-                         alt="${product.name}"
-                         style="width: 100%; height: 300px; object-fit: cover; border-radius: 12px;"
-                         onerror="this.src='https://images.unsplash.com/photo-1560472354-b33ff0c44a43?w=400&h=300&fit=crop'">
+                    ${product.photos && product.photos.length > 0 ? 
+                        `<img src="${product.photos[0]}" alt="${product.name}" style="width: 100%; height: 300px; object-fit: cover; border-radius: 12px;" onerror="this.parentElement.innerHTML='<div class=\\'modal-placeholder-image\\'>No Image Available</div>'">` :
+                        `<div class="modal-placeholder-image">No Image Available</div>`
+                    }
                 </div>
                 <div>
                     <h2 style="font-size: 2rem; font-weight: 600; color: #1e293b; margin-bottom: 0.5rem;">${product.name}</h2>

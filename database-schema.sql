@@ -84,37 +84,37 @@ ON CONFLICT (id) DO NOTHING;
 INSERT INTO products (id, name, company, price, stock, description, photos, tags, specs) VALUES
     ('p1', 'Nokia Smartphone Pro', 'nokia', 299.99, 45, 
      'Advanced smartphone with cutting-edge technology, featuring a powerful processor, exceptional camera system, and long-lasting battery life.',
-     '["https://images.unsplash.com/photo-1511707171634-5f897ff02aa9?w=400&h=300&fit=crop"]',
+     '[]',
      '["smartphone", "electronics", "mobile"]',
      '{"screen": "6.5 inch OLED", "storage": "128GB", "ram": "8GB", "camera": "48MP Triple Camera"}'),
     
     ('p2', 'Samsung Galaxy Ultra', 'samsung', 899.99, 32,
      'Premium flagship smartphone with professional-grade camera and display technology for the ultimate mobile experience.',
-     '["https://images.unsplash.com/photo-1592750475338-74b7b21085ab?w=400&h=300&fit=crop"]',
+     '[]',
      '["smartphone", "flagship", "premium"]',
      '{"screen": "6.8 inch Dynamic AMOLED", "storage": "256GB", "ram": "12GB", "camera": "108MP Quad Camera"}'),
     
     ('p3', 'Apple iPhone Pro', 'apple', 1199.99, 28,
      'The most advanced iPhone ever, featuring the powerful A17 Pro chip, titanium design, and revolutionary camera system.',
-     '["https://images.unsplash.com/photo-1556656793-08538906a9f8?w=400&h=300&fit=crop"]',
+     '[]',
      '["iphone", "premium", "apple"]',
      '{"screen": "6.7 inch Super Retina XDR", "storage": "256GB", "ram": "8GB", "camera": "48MP Pro Camera System"}'),
     
     ('p4', 'Nokia Tablet Elite', 'nokia', 449.99, 18,
      'Professional tablet designed for productivity and creativity, with a stunning display and powerful performance.',
-     '["https://images.unsplash.com/photo-1544244015-0df4b3ffc6b0?w=400&h=300&fit=crop"]',
+     '[]',
      '["tablet", "productivity", "electronics"]',
      '{"screen": "11 inch LCD", "storage": "128GB", "ram": "6GB", "battery": "8000mAh"}'),
     
     ('p5', 'Samsung Smart TV 4K', 'samsung', 799.99, 15,
      'Ultra-high definition smart TV with vibrant colors, smart features, and immersive sound for the ultimate viewing experience.',
-     '["https://images.unsplash.com/photo-1593359677879-a4bb92f829d1?w=400&h=300&fit=crop"]',
+     '[]',
      '["tv", "smart", "4k"]',
      '{"screen": "55 inch 4K UHD", "resolution": "3840x2160", "features": "Smart TV, HDR", "connectivity": "WiFi, Bluetooth"}'),
     
     ('p6', 'Apple MacBook Pro', 'apple', 1999.99, 12,
      'Supercharged by the M3 Pro chip, this MacBook Pro delivers exceptional performance for professionals and creators.',
-     '["https://images.unsplash.com/photo-1517336714731-489689fd1ca8?w=400&h=300&fit=crop"]',
+     '[]',
      '["laptop", "professional", "apple"]',
      '{"screen": "14 inch Liquid Retina XDR", "processor": "M3 Pro chip", "ram": "16GB", "storage": "512GB SSD"}')
 ON CONFLICT (id) DO NOTHING;
