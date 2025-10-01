@@ -18,9 +18,6 @@ class SupabaseDatabase {
                 this.clearOldLocalStorage();
                 localStorage.removeItem('force_refresh');
             }
-            
-            // Clear cache to force fresh data load
-            this.clearOldLocalStorage();
             await this.loadCompaniesFromSupabase();
             await this.loadProductsFromSupabase();
             

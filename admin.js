@@ -241,14 +241,27 @@ class AdminPanel {
     }
 
     loadCompanyOptions() {
+        if (!window.database) {
+            console.warn('Database not ready for company options, retrying...');
+            setTimeout(() => this.loadCompanyOptions(), 1000);
+            return;
+        }
+        
         const companies = database.getCompanies();
         const select = document.getElementById('productCompany');
         
         if (!select) return;
 
+        if (companies.length === 0) {
+            select.innerHTML = '<option value="">No companies available</option>';
+            return;
+        }
+
         select.innerHTML = companies.map(company => 
             `<option value="${company.id}">${company.name}</option>`
         ).join('');
+        
+        console.log('📋 Loaded company options:', companies.length);
     }
 
     showProductModal(product = null) {
@@ -278,6 +291,11 @@ class AdminPanel {
 
         modal.style.display = 'block';
         document.body.style.overflow = 'hidden';
+        
+        // Ensure company options are loaded when modal opens
+        setTimeout(() => {
+            this.loadCompanyOptions();
+        }, 100);
     }
 
     showCompanyModal(company = null) {
