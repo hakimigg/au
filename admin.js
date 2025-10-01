@@ -242,7 +242,6 @@ class AdminPanel {
 
     loadCompanyOptions() {
         if (!window.database) {
-            console.warn('Database not ready for company options, retrying...');
             setTimeout(() => this.loadCompanyOptions(), 1000);
             return;
         }
@@ -260,8 +259,6 @@ class AdminPanel {
         select.innerHTML = companies.map(company => 
             `<option value="${company.id}">${company.name}</option>`
         ).join('');
-        
-        console.log('📋 Loaded company options:', companies.length);
     }
 
     showProductModal(product = null) {

@@ -12,16 +12,35 @@ class WebsiteApp {
             this.initializeApp();
         }
     }
-
     async initializeApp() {
         this.setupEventListeners();
         this.setupSmoothScrolling();
         
         await this.waitForDatabase();
         
+        this.init();
+        this.hideLoading();
+    }
+
+    init() {
         this.loadCompanies();
         this.loadProducts();
-        this.hideLoading();
+        this.setupSearchListener();
+    }
+
+    setupSearchListener() {
+        const searchInput = document.getElementById('productSearch');
+        if (searchInput) {
+            searchInput.addEventListener('input', () => {
+                this.searchProducts();
+            });
+            
+            searchInput.addEventListener('keypress', (e) => {
+                if (e.key === 'Enter') {
+                    this.searchProducts();
+                }
+            });
+        }
     }
 
     setupEventListeners() {
@@ -234,6 +253,36 @@ class WebsiteApp {
 
         this.renderProducts(products);
         this.scrollToSection('products');
+    }
+
+    searchProducts() {
+        const searchTerm = document.getElementById('productSearch').value.toLowerCase().trim();
+        
+        if (searchTerm === '') {
+            // If search is empty, show all products or current filter
+            this.filterByCompany(this.currentFilter || 'all');
+            return;
+        }
+
+        let products = database.getAvailableProducts();
+        
+        // Filter products based on search term
+        const filteredProducts = products.filter(product => {
+            const company = database.getCompanyById(product.company);
+            return (
+                product.name.toLowerCase().includes(searchTerm) ||
+                product.description.toLowerCase().includes(searchTerm) ||
+                (company && company.name.toLowerCase().includes(searchTerm)) ||
+                (product.tags && product.tags.some(tag => tag.toLowerCase().includes(searchTerm)))
+            );
+        });
+
+        this.renderProducts(filteredProducts);
+        
+        // Update filter buttons to show search is active
+        document.querySelectorAll('.filter-btn').forEach(btn => {
+            btn.classList.remove('active');
+        });
     }
 
     showProductDetails(productId) {
