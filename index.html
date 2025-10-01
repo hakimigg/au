@@ -4,25 +4,26 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Beta Website - Premium Products</title>
-    <link rel="stylesheet" href="styles.css">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 </head>
 <body>
     <header class="header">
         <nav class="nav">
-            <div class="nav-container">
-                <div class="logo">Beta Website</div>
-                <ul class="nav-links">
-                    <li><a href="#home" class="nav-link">Home</a></li>
-                    <li><a href="#products" class="nav-link">Products</a></li>
-                    <li><a href="#companies" class="nav-link">Companies</a></li>
-                    <li><a href="#contact" class="nav-link">Contact</a></li>
-                </ul>
-                <div class="mobile-menu-btn">
-                    <span></span>
-                    <span></span>
-                    <span></span>
-                </div>
+            <div class="logo">Beta Website</div>
+            <ul class="nav-links">
+                <li><a href="#home" class="nav-link" data-translate="nav.home">Home</a></li>
+                <li><a href="#products" class="nav-link" data-translate="nav.products">Products</a></li>
+                <li><a href="#companies" class="nav-link" data-translate="nav.companies">Companies</a></li>
+                <li><a href="#contact" class="nav-link" data-translate="nav.contact">Contact</a></li>
+            </ul>
+            <div class="language-switcher">
+                <button class="lang-btn active" data-lang="en">EN</button>
+                <button class="lang-btn" data-lang="fr">FR</button>
+            </div>
+            <div class="mobile-menu-btn">
+                <span></span>
+                <span></span>
+                <span></span>
             </div>
         </nav>
     </header>
@@ -31,10 +32,10 @@
         <div class="hero-background"></div>
         <div class="hero-overlay"></div>
         <div class="hero-content">
-            <h1 class="hero-title">Welcome to Beta Website</h1>
-            <p class="hero-subtitle">Discover amazing products from top companies</p>
+            <h1 class="hero-title" data-translate="hero.title">Welcome to Beta Website</h1>
+            <p class="hero-subtitle" data-translate="hero.subtitle">Discover amazing products from top companies</p>
             <button class="hero-btn" onclick="scrollToSection('products')">
-                <span>Explore Products</span>
+                <span data-translate="hero.button">Explore Products</span>
                 <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" style="margin-left: 8px;">
                     <path d="M5 12H19M19 12L12 5M19 12L12 19" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
                 </svg>
@@ -44,7 +45,8 @@
 
     <section id="companies" class="companies-section">
         <div class="container">
-            <h2 class="section-title">Our Collections</h2>
+            <h2 class="section-title" data-translate="companies.title">Our Collections</h2>
+            <p class="section-subtitle" data-translate="companies.subtitle">Explore products from our partner companies</p>
             <div class="companies-grid" id="companiesGrid">
             </div>
         </div>
@@ -53,13 +55,13 @@
     <section id="products" class="products-section">
         <div class="container">
             <div class="products-header">
-                <h2 class="section-title">Featured Products</h2>
-                <p class="section-subtitle">Discover our carefully selected premium products</p>
+                <h2 class="section-title" data-translate="products.title">Featured Products</h2>
+                <p class="section-subtitle" data-translate="products.subtitle">Discover our carefully selected premium products</p>
             </div>
             
             <div class="search-container">
                 <div class="search-box">
-                    <input type="text" id="productSearch" placeholder="Search products..." class="search-input">
+                    <input type="text" id="productSearch" data-translate="products.searchPlaceholder" placeholder="Search products..." class="search-input">
                     <button class="search-btn" onclick="app.searchProducts()">
                         <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                             <circle cx="11" cy="11" r="8" stroke="currentColor" stroke-width="2"/>
@@ -81,20 +83,20 @@
 
     <section id="contact" class="contact-section">
         <div class="container">
-            <h2 class="section-title">Contact Us</h2>
-            <p class="section-subtitle">Get in touch for inquiries and support</p>
+            <h2 class="section-title" data-translate="contact.title">Contact Us</h2>
+            <p class="section-subtitle" data-translate="contact.subtitle">Get in touch with our team</p>
             
             <div class="contact-info">
                 <div class="contact-item">
-                    <h3>Email</h3>
+                    <h3 data-translate="contact.email">Email</h3>
                     <p>contact@betawebsite.com</p>
                 </div>
                 <div class="contact-item">
-                    <h3>Phone</h3>
+                    <h3 data-translate="contact.phone">Phone</h3>
                     <p>+213 555 123 456</p>
                 </div>
                 <div class="contact-item">
-                    <h3>Address</h3>
+                    <h3 data-translate="contact.address">Address</h3>
                     <p>123 street, City, Country</p>
                 </div>
             </div>
@@ -103,7 +105,7 @@
 
     <footer class="footer">
         <div class="container">
-            <p class="footer-copyright">© 2025 Beta Website. All rights reserved.</p>
+            <p class="footer-copyright" data-translate="footer.copyright">© 2025 Beta Website. All rights reserved.</p>
         </div>
     </footer>
 
@@ -121,6 +123,7 @@
 
     <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
     <script src="supabase-config.js"></script>
+    <script src="translations.js"></script>
     <script src="script.js"></script>
 </body>
 </html>

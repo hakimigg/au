@@ -3,7 +3,6 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Admin Panel - Beta Website</title>
     <link rel="stylesheet" href="admin-styles.css">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 </head>
@@ -11,8 +10,12 @@
     <div id="loginScreen" class="login-screen">
         <div class="login-container">
             <div class="login-header">
-                <h1>Admin Panel</h1>
-                <p>Beta Website Management</p>
+                <h2>Beta Website</h2>
+                <div class="language-switcher">
+                    <a href="admin.html" class="lang-btn active">EN</a>
+                    <a href="admin-fr.html" class="lang-btn">FR</a>
+                </div>
+                <p>Admin Login</p>
             </div>
             <form id="loginForm" class="login-form">
                 <div class="form-group">
@@ -39,6 +42,11 @@
                     <p>Beta Website Management</p>
                 </div>
                 <div class="header-right">
+                    <div class="language-switcher">
+                        <a href="admin.html" class="lang-btn active">EN</a>
+                        <a href="admin-fr.html" class="lang-btn">FR</a>
+                    </div>
+                    <span class="username-display" id="usernameDisplay">Admin</span>
                     <button id="logoutBtn" class="logout-btn">Logout</button>
                 </div>
             </div>

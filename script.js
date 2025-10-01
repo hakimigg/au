@@ -18,6 +18,11 @@ class WebsiteApp {
         this.setupEventListeners();
         this.setupSmoothScrolling();
         
+        // Initialize language system
+        if (window.languageManager) {
+            window.languageManager.init();
+        }
+        
         console.log('⏳ Waiting for database...');
         await this.waitForDatabase();
         console.log('✅ Database ready, loading data...');
@@ -175,8 +180,9 @@ class WebsiteApp {
         const filterButtons = document.getElementById('filterButtons');
         if (!filterButtons) return;
 
+        const allProductsText = window.languageManager ? window.languageManager.translate('products.allProducts') : 'All Products';
         const buttons = [
-            { id: 'all', name: 'All Products' },
+            { id: 'all', name: allProductsText },
             ...companies.map(company => ({ id: company.id, name: company.name }))
         ];
 
@@ -210,30 +216,37 @@ class WebsiteApp {
         if (!productsGrid) return;
 
         if (products.length === 0) {
-            productsGrid.innerHTML = '<div class="empty-state"><h3>No products found</h3></div>';
+            const noProductsText = window.languageManager ? window.languageManager.translate('products.noProducts') : 'No products found';
+            productsGrid.innerHTML = `<div class="empty-state"><h3>${noProductsText}</h3></div>`;
             return;
         }
 
-        productsGrid.innerHTML = products.map(product => `
-            <div class="product-card animate-fadeInUp" onclick="app.showProductDetails('${product.id}')">
-                <div class="product-image">
-                    ${product.photos && product.photos.length > 0 ? 
-                        `<img src="${product.photos[0]}" alt="${product.name}" onerror="this.parentElement.innerHTML='<div class=\\'placeholder-image\\'>No Image</div>'">` :
-                        `<div class="placeholder-image">No Image</div>`
-                    }
+        productsGrid.innerHTML = products.map(product => {
+            const viewDetailsText = window.languageManager ? window.languageManager.translate('products.viewDetails') : 'View Details';
+            const inStockText = window.languageManager ? window.languageManager.translate('products.inStock') : 'in stock';
+            const priceText = window.languageManager ? window.languageManager.translate('products.price') : 'DA';
+            
+            return `
+                <div class="product-card animate-fadeInUp" onclick="app.showProductDetails('${product.id}')">
+                    <div class="product-image">
+                        ${product.photos && product.photos.length > 0 ? 
+                            `<img src="${product.photos[0]}" alt="${product.name}" onerror="this.parentElement.innerHTML='<div class=\\'placeholder-image\\'>No Image</div>'">` :
+                            `<div class="placeholder-image">No Image</div>`
+                        }
+                    </div>
+                    <div class="product-info">
+                        <h3 class="product-name">${product.name}</h3>
+                        <p class="product-company">${this.getCompanyName(product.company)}</p>
+                        <p class="product-price">${product.price.toFixed(2)} ${priceText}</p>
+                        <p class="product-description">${this.truncateText(product.description, 100)}</p>
+                        <p class="product-stock">${product.stock} ${inStockText}</p>
+                        <button class="view-details-btn" onclick="event.stopPropagation(); app.showProductDetails('${product.id}')">
+                            ${viewDetailsText}
+                        </button>
+                    </div>
                 </div>
-                <div class="product-info">
-                    <h3 class="product-name">${product.name}</h3>
-                    <p class="product-company">${this.getCompanyName(product.company)}</p>
-                    <p class="product-price">${product.price.toFixed(2)} DA</p>
-                    <p class="product-description">${this.truncateText(product.description, 100)}</p>
-                    <p class="product-stock">${product.stock} in stock</p>
-                    <button class="view-details-btn" onclick="event.stopPropagation(); app.showProductDetails('${product.id}')">
-                        View Details
-                    </button>
-                </div>
-            </div>
-        `).join('');
+            `;
+        }).join('');
     }
 
     getCompanyName(companyId) {

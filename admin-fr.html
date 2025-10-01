@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tableau de Bord Admin - Beta Website</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="admin-styles.css">
+</head>
+<body>
+    <div class="admin-container">
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <h2>Beta Website</h2>
+                <div class="language-switcher">
+                    <a href="admin.html" class="lang-btn">EN</a>
+                    <a href="admin-fr.html" class="lang-btn active">FR</a>
+                </div>
+            </div>
+            <nav class="sidebar-nav">
+                <button class="nav-btn active" data-section="dashboard">
+                    <span class="nav-icon">📊</span>
+                    Tableau de Bord
+                </button>
+                <button class="nav-btn" data-section="products">
+                    <span class="nav-icon">📦</span>
+                    Produits
+                </button>
+                <button class="nav-btn" data-section="companies">
+                    <span class="nav-icon">🏢</span>
+                    Entreprises
+                </button>
+                <button class="nav-btn" data-section="settings">
+                    <span class="nav-icon">⚙️</span>
+                    Paramètres
+                </button>
+            </nav>
+            <div class="sidebar-footer">
+                <div class="user-info">
+                    <span class="user-name" id="usernameDisplay">Admin</span>
+                </div>
+                <button class="logout-btn" onclick="logout()">Déconnexion</button>
+            </div>
+        </aside>
+
+        <main class="main-content">
+            <header class="main-header">
+                <h1 id="pageTitle">Tableau de Bord</h1>
+            </header>
+
+            <!-- Dashboard Section -->
+            <section id="dashboardSection" class="content-section active">
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-icon">📦</div>
+                        <div class="stat-info">
+                            <h3 id="totalProducts">0</h3>
+                            <p>Total des Produits</p>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon">🏢</div>
+                        <div class="stat-info">
+                            <h3 id="totalCompanies">0</h3>
+                            <p>Total des Entreprises</p>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon">⚠️</div>
+                        <div class="stat-info">
+                            <h3 id="lowStockItems">0</h3>
+                            <p>Articles en Rupture</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="dashboard-content">
+                    <div class="dashboard-card">
+                        <h3>Activité Récente</h3>
+                        <div class="activity-list" id="activityList">
+                            <p class="no-activity">Aucune activité récente</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Products Section -->
+            <section id="productsSection" class="content-section">
+                <div class="section-header">
+                    <h2>Gestion des Produits</h2>
+                    <button class="add-btn" onclick="adminPanel.showProductModal()">Ajouter un Produit</button>
+                </div>
+                <div class="table-container">
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>Nom</th>
+                                <th>Entreprise</th>
+                                <th>Prix</th>
+                                <th>Stock</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="productsTableBody">
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+
+            <!-- Companies Section -->
+            <section id="companiesSection" class="content-section">
+                <div class="section-header">
+                    <h2>Gestion des Entreprises</h2>
+                    <button class="add-btn" onclick="adminPanel.showCompanyModal()">Ajouter une Entreprise</button>
+                </div>
+                <div class="table-container">
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>Nom</th>
+                                <th>Description</th>
+                                <th>Produits</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="companiesTableBody">
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+
+            <!-- Settings Section -->
+            <section id="settingsSection" class="content-section">
+                <div class="settings-content">
+                    <h2>Paramètres du Site</h2>
+                    <div class="settings-grid">
+                        <div class="setting-item">
+                            <label>Nom du Site</label>
+                            <input type="text" id="siteName" value="Beta Website">
+                        </div>
+                        <div class="setting-item">
+                            <label>Description du Site</label>
+                            <textarea id="siteDescription">Découvrez des produits incroyables de grandes entreprises</textarea>
+                        </div>
+                        <div class="setting-item">
+                            <label>Email de Contact</label>
+                            <input type="email" id="contactEmail" value="contact@betawebsite.com">
+                        </div>
+                        <div class="setting-item">
+                            <label>Téléphone de Contact</label>
+                            <input type="tel" id="contactPhone" value="+213 555 123 456">
+                        </div>
+                    </div>
+                    <button class="save-btn" onclick="adminPanel.saveSettings()">Enregistrer les Paramètres</button>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <!-- Product Modal -->
+    <div id="productModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 id="productModalTitle">Ajouter un Produit</h3>
+                <button class="modal-close" onclick="adminPanel.closeModals()">&times;</button>
+            </div>
+            <form id="productForm" class="modal-form">
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="productName">Nom du Produit</label>
+                        <input type="text" id="productName" name="name" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="productCompany">Entreprise</label>
+                        <select id="productCompany" name="company" required>
+                        </select>
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="productPrice">Prix (DA)</label>
+                        <input type="number" id="productPrice" name="price" step="0.01" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="productStock">Stock</label>
+                        <input type="number" id="productStock" name="stock" required>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="productDescription">Description</label>
+                    <textarea id="productDescription" name="description" rows="3" required></textarea>
+                </div>
+                <div class="form-group">
+                    <label>Photo du Produit</label>
+                    <div class="photo-upload">
+                        <input type="file" id="productPhoto" accept="image/*" style="display: none;">
+                        <button type="button" class="upload-btn" onclick="document.getElementById('productPhoto').click()">
+                            Choisir une Photo
+                        </button>
+                        <div id="productImagePreview" class="image-preview"></div>
+                    </div>
+                </div>
+                <div class="modal-actions">
+                    <button type="button" class="cancel-btn" onclick="adminPanel.closeModals()">Annuler</button>
+                    <button type="submit" class="save-btn">Enregistrer</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Company Modal -->
+    <div id="companyModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 id="companyModalTitle">Ajouter une Entreprise</h3>
+                <button class="modal-close" onclick="adminPanel.closeModals()">&times;</button>
+            </div>
+            <form id="companyForm" class="modal-form">
+                <div class="form-group">
+                    <label for="companyName">Nom de l'Entreprise</label>
+                    <input type="text" id="companyName" name="name" required>
+                </div>
+                <div class="form-group">
+                    <label for="companyDescription">Description</label>
+                    <textarea id="companyDescription" name="description" rows="3" required></textarea>
+                </div>
+                <div class="form-group">
+                    <label>Photo de l'Entreprise</label>
+                    <div class="photo-upload">
+                        <input type="file" id="companyPhoto" accept="image/*" style="display: none;">
+                        <button type="button" class="upload-btn" onclick="document.getElementById('companyPhoto').click()">
+                            Choisir une Photo
+                        </button>
+                        <div id="companyImagePreview" class="image-preview"></div>
+                    </div>
+                </div>
+                <div class="modal-actions">
+                    <button type="button" class="cancel-btn" onclick="adminPanel.closeModals()">Annuler</button>
+                    <button type="submit" class="save-btn">Enregistrer</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <div class="notification" id="notification"></div>
+
+    <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
+    <script src="supabase-config.js"></script>
+    <script src="database.js"></script>
+    <script>
+        // Set French language for admin panel
+        const ADMIN_LANGUAGE = 'fr';
+    </script>
+    <script src="admin.js"></script>
+</body>
+</html>
