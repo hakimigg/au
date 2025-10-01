@@ -125,14 +125,22 @@ class WebsiteApp {
             return;
         }
 
-        companiesGrid.innerHTML = companies.map(company => `
-            <div class="company-card animate-fadeInUp" onclick="app.filterByCompany('${company.id}')">
-                <div style="position: relative; z-index: 10;">
-                    <h3>${company.name.toUpperCase()}</h3>
-                    <div class="company-divider"></div>
+        companiesGrid.innerHTML = companies.map(company => {
+            const backgroundImage = company.logo || company.photo;
+            const backgroundStyle = backgroundImage ? 
+                `background-image: url('${backgroundImage}'); background-size: cover; background-position: center;` : 
+                '';
+            
+            return `
+                <div class="company-card animate-fadeInUp" onclick="app.filterByCompany('${company.id}')" 
+                     style="${backgroundStyle}">
+                    <div class="company-overlay">
+                        <h3>${company.name.toUpperCase()}</h3>
+                        <div class="company-divider"></div>
+                    </div>
                 </div>
-            </div>
-        `).join('');
+            `;
+        }).join('');
     }
 
     renderFilterButtons(companies) {
