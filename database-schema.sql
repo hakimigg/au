@@ -2,10 +2,14 @@ CREATE TABLE IF NOT EXISTS companies (
     id TEXT PRIMARY KEY,
     name TEXT NOT NULL UNIQUE,
     description TEXT,
+    logo TEXT,
     photo TEXT,
     created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
     updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
 );
+
+-- Add photo column if it doesn't exist (for existing databases)
+ALTER TABLE companies ADD COLUMN IF NOT EXISTS photo TEXT;
 
 CREATE TABLE IF NOT EXISTS products (
     id TEXT PRIMARY KEY,

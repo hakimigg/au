@@ -5,25 +5,25 @@ class Database {
                 id: 'nokia',
                 name: 'Nokia',
                 description: 'Leading telecommunications and technology company',
-                photo: null
+                logo: null
             },
             {
                 id: 'samsung',
                 name: 'Samsung',
                 description: 'Global technology conglomerate',
-                photo: null
+                logo: null
             },
             {
                 id: 'apple',
                 name: 'Apple',
                 description: 'Premium consumer electronics and software',
-                photo: null
+                logo: null
             },
             {
                 id: 'premium',
                 name: 'Premium',
                 description: 'Luxury and premium products',
-                photo: null
+                logo: null
             }
         ];
 

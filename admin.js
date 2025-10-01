@@ -295,8 +295,8 @@ class AdminPanel {
             document.getElementById('companyDescription').value = company.description || '';
             
             // Handle existing company photo
-            if (company.photo) {
-                this.showCompanyImagePreview(company.photo);
+            if (company.photo || company.logo) {
+                this.showCompanyImagePreview(company.photo || company.logo);
             }
         } else {
             form.reset();
