@@ -188,9 +188,10 @@ class WebsiteApp {
         productsGrid.innerHTML = products.map(product => `
             <div class="product-card animate-fadeInUp" onclick="app.showProductDetails('${product.id}')">
                 <div class="product-image">
-                    <img src="${product.photos[0] || 'https://images.unsplash.com/photo-1560472354-b33ff0c44a43?w=400&h=300&fit=crop'}" 
-                         alt="${product.name}"
-                         onerror="this.src='https://images.unsplash.com/photo-1560472354-b33ff0c44a43?w=400&h=300&fit=crop'">
+                    ${product.photos && product.photos.length > 0 ? 
+                        `<img src="${product.photos[0]}" alt="${product.name}" onerror="this.parentElement.innerHTML='<div class=\\'placeholder-image\\'>No Image</div>'">` :
+                        `<div class="placeholder-image">No Image</div>`
+                    }
                 </div>
                 <div class="product-info">
                     <h3 class="product-name">${product.name}</h3>

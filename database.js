@@ -35,7 +35,7 @@ class Database {
                 company: 'nokia',
                 price: 299.99,
                 stock: 45,
-                photos: ['https://images.unsplash.com/photo-1511707171634-5f897ff02aa9?w=400&h=300&fit=crop'],
+                photos: [],
                 tags: ['smartphone', 'electronics', 'mobile'],
                 specs: {
                     screen: '6.5 inch OLED',
@@ -51,7 +51,7 @@ class Database {
                 company: 'samsung',
                 price: 899.99,
                 stock: 32,
-                photos: ['https://images.unsplash.com/photo-1592750475338-74b7b21085ab?w=400&h=300&fit=crop'],
+                photos: [],
                 tags: ['smartphone', 'flagship', 'premium'],
                 specs: {
                     screen: '6.8 inch Dynamic AMOLED',
@@ -67,7 +67,7 @@ class Database {
                 company: 'apple',
                 price: 1199.99,
                 stock: 28,
-                photos: ['https://images.unsplash.com/photo-1556656793-08538906a9f8?w=400&h=300&fit=crop'],
+                photos: [],
                 tags: ['iphone', 'premium', 'apple'],
                 specs: {
                     screen: '6.7 inch Super Retina XDR',
@@ -83,7 +83,7 @@ class Database {
                 company: 'nokia',
                 price: 449.99,
                 stock: 18,
-                photos: ['https://images.unsplash.com/photo-1544244015-0df4b3ffc6b0?w=400&h=300&fit=crop'],
+                photos: [],
                 tags: ['tablet', 'productivity', 'electronics'],
                 specs: {
                     screen: '11 inch LCD',
@@ -99,7 +99,7 @@ class Database {
                 company: 'samsung',
                 price: 799.99,
                 stock: 15,
-                photos: ['https://images.unsplash.com/photo-1593359677879-a4bb92f829d1?w=400&h=300&fit=crop'],
+                photos: [],
                 tags: ['tv', 'smart', '4k'],
                 specs: {
                     screen: '55 inch 4K UHD',
@@ -115,7 +115,7 @@ class Database {
                 company: 'apple',
                 price: 1999.99,
                 stock: 12,
-                photos: ['https://images.unsplash.com/photo-1517336714731-489689fd1ca8?w=400&h=300&fit=crop'],
+                photos: [],
                 tags: ['laptop', 'professional', 'apple'],
                 specs: {
                     screen: '14 inch Liquid Retina XDR',

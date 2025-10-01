@@ -326,7 +326,7 @@ class AdminPanel {
             price: parseFloat(formData.get('price')),
             stock: 1,
             description: formData.get('description'),
-            photos: this.currentProductImageUrl ? [this.currentProductImageUrl] : ['https://images.unsplash.com/photo-1560472354-b33ff0c44a43?w=400&h=300&fit=crop'],
+            photos: this.currentProductImageUrl ? [this.currentProductImageUrl] : [],
             tags: []
         };
 
