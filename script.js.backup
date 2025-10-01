@@ -1,7 +1,7 @@
 class WebsiteApp {
     constructor() {
         this.currentFilter = 'all';
-        this.isLoading = true;
+        this.isLoading = false;
         this.init();
     }
 
@@ -12,7 +12,6 @@ class WebsiteApp {
             this.initializeApp();
         }
     }
-
     async initializeApp() {
         console.log('🚀 Initializing app...');
         this.setupEventListeners();
@@ -81,14 +80,23 @@ class WebsiteApp {
                 const targetElement = document.querySelector(targetId);
                 if (targetElement) {
                     const headerHeight = document.querySelector('.header').offsetHeight;
-                    const elementPosition = targetElement.getBoundingClientRect().top + window.pageYOffset - headerHeight;
                     
                     window.scrollTo({
                         top: elementPosition,
                         behavior: 'smooth'
                     });
-                }
+                });
             });
+        });
+
+        // Wait for database to be ready
+        await new Promise(resolve => {
+            const interval = setInterval(() => {
+                if (window.database) {
+                    clearInterval(interval);
+                    resolve();
+                }
+            }, 100);
         });
     }
 
@@ -225,7 +233,7 @@ class WebsiteApp {
                 <div class="product-info">
                     <h3 class="product-name">${product.name}</h3>
                     <p class="product-company">${this.getCompanyName(product.company)}</p>
-                    <p class="product-price">${product.price.toFixed(2)} DA</p>
+                    <p class="product-price">${product.price.toFixed(2)}</p>
                     <p class="product-description">${this.truncateText(product.description, 100)}</p>
                     <p class="product-stock">${product.stock} in stock</p>
                     <button class="view-details-btn" onclick="event.stopPropagation(); app.showProductDetails('${product.id}')">
@@ -242,7 +250,7 @@ class WebsiteApp {
     }
 
     truncateText(text, maxLength) {
-        if (!text || text.length <= maxLength) return text || '';
+        if (text.length <= maxLength) return text;
         return text.substring(0, maxLength) + '...';
     }
 
@@ -269,12 +277,14 @@ class WebsiteApp {
         const searchTerm = document.getElementById('productSearch').value.toLowerCase().trim();
         
         if (searchTerm === '') {
+            // If search is empty, show all products or current filter
             this.filterByCompany(this.currentFilter || 'all');
             return;
         }
 
         let products = database.getAvailableProducts();
         
+        // Filter products based on search term
         const filteredProducts = products.filter(product => {
             const company = database.getCompanyById(product.company);
             return (
@@ -287,6 +297,7 @@ class WebsiteApp {
 
         this.renderProducts(filteredProducts);
         
+        // Update filter buttons to show search is active
         document.querySelectorAll('.filter-btn').forEach(btn => {
             btn.classList.remove('active');
         });
@@ -344,19 +355,6 @@ class WebsiteApp {
             document.body.style.overflow = 'auto';
         }
     }
-
-    scrollToSection(sectionId) {
-        const element = document.getElementById(sectionId);
-        if (element) {
-            const headerHeight = document.querySelector('.header').offsetHeight;
-            const elementPosition = element.getBoundingClientRect().top + window.pageYOffset - headerHeight;
-            
-            window.scrollTo({
-                top: elementPosition,
-                behavior: 'smooth'
-            });
-        }
-    }
 }
 
 function scrollToSection(sectionId) {
@@ -372,5 +370,4 @@ function scrollToSection(sectionId) {
     }
 }
 
-// Initialize the app
-const app = new WebsiteApp();
+window.app = new WebsiteApp();
