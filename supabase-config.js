@@ -69,7 +69,7 @@ class SupabaseDatabase {
             const sanitizedData = {
                 id: this.generateSecureId(),
                 name: this.sanitizeInput(companyData.name),
-                description: companyData.description ? this.sanitizeInput(companyData.description) : null,
+                description: companyData.description ? this.sanitizeInput(companyData.description) : '',
                 logo: companyData.photo || null,
                 created_at: new Date().toISOString()
             };
@@ -104,7 +104,7 @@ class SupabaseDatabase {
 
             const sanitizedData = {
                 name: this.sanitizeInput(companyData.name),
-                description: companyData.description ? this.sanitizeInput(companyData.description) : null,
+                description: companyData.description ? this.sanitizeInput(companyData.description) : '',
                 logo: companyData.photo || null,
                 updated_at: new Date().toISOString()
             };

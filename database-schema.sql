@@ -11,6 +11,9 @@ CREATE TABLE IF NOT EXISTS companies (
 -- Add photo column if it doesn't exist (for existing databases)
 ALTER TABLE companies ADD COLUMN IF NOT EXISTS photo TEXT;
 
+-- Make description column nullable (remove NOT NULL constraint)
+ALTER TABLE companies ALTER COLUMN description DROP NOT NULL;
+
 CREATE TABLE IF NOT EXISTS products (
     id TEXT PRIMARY KEY,
     name TEXT NOT NULL,
