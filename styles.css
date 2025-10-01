@@ -266,37 +266,42 @@ body {
 
 .company-card {
     position: relative;
-    background: rgba(255, 255, 255, 0.9);
-    backdrop-filter: blur(10px);
-    border: 1px solid rgba(212, 165, 116, 0.2);
-    border-radius: 16px;
-    padding: 2rem;
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.95), rgba(255, 255, 255, 0.9));
+    backdrop-filter: blur(15px);
+    border: 1px solid rgba(212, 165, 116, 0.3);
+    border-radius: 20px;
+    padding: 2.5rem 2rem;
     text-align: center;
     transition: all 0.4s ease;
     cursor: pointer;
-    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
-    height: 150px;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.08);
+    height: 180px;
     display: flex;
     align-items: center;
     justify-content: center;
+    overflow: hidden;
 }
 
 .company-card:hover {
-    transform: translateY(-8px) scale(1.02);
-    box-shadow: 0 20px 40px rgba(212, 165, 116, 0.3);
+    transform: translateY(-10px);
+    box-shadow: 0 25px 50px rgba(212, 165, 116, 0.25);
     border-color: #d4a574;
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.98), rgba(255, 255, 255, 0.95));
 }
 
 .company-card h3 {
-    font-size: 2.5rem;
-    font-weight: 300;
+    font-size: 2rem;
+    font-weight: 600;
     color: #1e293b;
-    letter-spacing: 0.1em;
-    transition: color 0.3s ease;
+    letter-spacing: 0.05em;
+    transition: all 0.3s ease;
+    margin: 0;
+    text-transform: uppercase;
 }
 
 .company-card:hover h3 {
     color: #d4a574;
+    transform: scale(1.05);
 }
 
 .company-divider {
@@ -314,15 +319,21 @@ body {
 .company-overlay {
     position: relative;
     z-index: 10;
-    background: rgba(255, 255, 255, 0.9);
-    backdrop-filter: blur(10px);
-    padding: 2rem;
-    border-radius: 20px;
+    background: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(5px);
+    padding: 1.5rem;
+    border-radius: 16px;
     transition: all 0.3s ease;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
 }
 
 .company-card:hover .company-overlay {
-    background: rgba(255, 255, 255, 0.95);
+    background: rgba(255, 255, 255, 0.2);
+    backdrop-filter: blur(8px);
 }
 
 /* Products Header */
@@ -335,53 +346,63 @@ body {
 .search-container {
     display: flex;
     justify-content: center;
-    margin-bottom: 2rem;
+    margin-bottom: 3rem;
 }
 
 .search-box {
     position: relative;
-    max-width: 500px;
+    max-width: 600px;
     width: 100%;
 }
 
 .search-input {
     width: 100%;
-    padding: 1rem 3.5rem 1rem 1.5rem;
-    border: 2px solid #e5e7eb;
-    border-radius: 25px;
-    font-size: 1rem;
-    background: white;
+    padding: 1.25rem 4rem 1.25rem 2rem;
+    border: none;
+    border-radius: 16px;
+    font-size: 1.1rem;
+    background: rgba(255, 255, 255, 0.9);
+    backdrop-filter: blur(10px);
     transition: all 0.3s ease;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+    border: 1px solid rgba(212, 165, 116, 0.2);
 }
 
 .search-input:focus {
     outline: none;
     border-color: #d4a574;
-    box-shadow: 0 4px 20px rgba(212, 165, 116, 0.2);
+    box-shadow: 0 12px 40px rgba(212, 165, 116, 0.25);
+    background: rgba(255, 255, 255, 0.95);
+}
+
+.search-input::placeholder {
+    color: #9ca3af;
+    font-weight: 400;
 }
 
 .search-btn {
     position: absolute;
-    right: 8px;
+    right: 12px;
     top: 50%;
     transform: translateY(-50%);
     background: linear-gradient(135deg, #d4a574, #b8860b);
     border: none;
-    border-radius: 50%;
-    width: 40px;
-    height: 40px;
+    border-radius: 12px;
+    width: 48px;
+    height: 48px;
     display: flex;
     align-items: center;
     justify-content: center;
     color: white;
     cursor: pointer;
     transition: all 0.3s ease;
+    box-shadow: 0 4px 12px rgba(212, 165, 116, 0.3);
 }
 
 .search-btn:hover {
     background: linear-gradient(135deg, #c19660, #a0750a);
     transform: translateY(-50%) scale(1.05);
+    box-shadow: 0 6px 20px rgba(212, 165, 116, 0.4);
 }
 
 /* Filter Container */
@@ -754,11 +775,27 @@ body {
     }
     
     .company-card {
-        height: 120px;
+        height: 140px;
+        padding: 2rem 1.5rem;
     }
     
     .company-card h3 {
-        font-size: 2rem;
+        font-size: 1.5rem;
+    }
+    
+    .search-box {
+        max-width: 90%;
+    }
+    
+    .search-input {
+        padding: 1rem 3.5rem 1rem 1.5rem;
+        font-size: 1rem;
+    }
+    
+    .search-btn {
+        width: 40px;
+        height: 40px;
+        right: 8px;
     }
     
     .products-grid {
