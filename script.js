@@ -262,6 +262,18 @@ class WebsiteApp {
     filterByCompany(companyId) {
         this.currentFilter = companyId;
         
+        // Scroll to products section
+        const productsSection = document.getElementById('products');
+        if (productsSection) {
+            const headerHeight = document.querySelector('.header').offsetHeight;
+            const elementPosition = productsSection.getBoundingClientRect().top + window.pageYOffset - headerHeight;
+            
+            window.scrollTo({
+                top: elementPosition,
+                behavior: 'smooth'
+            });
+        }
+        
         document.querySelectorAll('.filter-btn').forEach(btn => {
             btn.classList.remove('active');
         });

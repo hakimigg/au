@@ -19,7 +19,7 @@ const translations = {
         // Products Section
         products: {
             title: "Featured Products",
-            subtitle: "Discover our carefully selected premium products",
+            subtitle: "Browse amazing products from top companies",
             searchPlaceholder: "Search products...",
             allProducts: "All Products",
             noProducts: "No products found",
@@ -30,7 +30,7 @@ const translations = {
         
         // Companies Section
         companies: {
-            title: "Our Collections",
+            title: "Our Companies",
             subtitle: "Explore products from our partner companies",
             noCompanies: "No companies found"
         },
@@ -107,7 +107,7 @@ const translations = {
         // Products Section
         products: {
             title: "Produits en Vedette",
-            subtitle: "Découvrez nos produits premium soigneusement sélectionnés",
+            subtitle: "Parcourez des produits incroyables de grandes entreprises",
             searchPlaceholder: "Rechercher des produits...",
             allProducts: "Tous les Produits",
             noProducts: "Aucun produit trouvé",
@@ -118,7 +118,7 @@ const translations = {
         
         // Companies Section
         companies: {
-            title: "Nos Collections",
+            title: "Nos Entreprises",
             subtitle: "Explorez les produits de nos entreprises partenaires",
             noCompanies: "Aucune entreprise trouvée"
         },

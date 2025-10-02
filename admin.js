@@ -3,20 +3,22 @@ class AdminPanel {
         this.currentUser = null;
         this.currentEditingProduct = null;
         this.currentEditingCompany = null;
-        this.init();
-    }
-
-    init() {
-        if (document.readyState === 'loading') {
-            document.addEventListener('DOMContentLoaded', () => this.initializeAdmin());
-        } else {
-            this.initializeAdmin();
-        }
-    }
-
-    initializeAdmin() {
+        this.currentFilter = 'all';
+        this.initializeCredentials();
         this.setupEventListeners();
         this.checkAuthStatus();
+    }
+
+    initializeCredentials() {
+        // Clean up old password storage method
+        localStorage.removeItem('adminPassword');
+        
+        // Initialize default credentials if they don't exist
+        const storedCredentials = localStorage.getItem('admin_credentials');
+        if (!storedCredentials) {
+            const defaultCredentials = { username: 'admin', password: 'admin123' };
+            localStorage.setItem('admin_credentials', JSON.stringify(defaultCredentials));
+        }
     }
 
     setupEventListeners() {
@@ -86,8 +88,19 @@ class AdminPanel {
         const username = formData.get('username');
         const password = formData.get('password');
 
+        // Get stored credentials or use defaults
+        const storedUser = localStorage.getItem('admin_credentials');
+        let validUsername = 'admin';
+        let validPassword = 'admin123';
+        
+        if (storedUser) {
+            const credentials = JSON.parse(storedUser);
+            validUsername = credentials.username;
+            validPassword = credentials.password;
+        }
+
         // Simple authentication (in production, use proper authentication)
-        if (username === 'admin' && password === 'admin123') {
+        if (username === validUsername && password === validPassword) {
             this.currentUser = { username: username };
             localStorage.setItem('admin_user', JSON.stringify(this.currentUser));
             this.showDashboard();
@@ -665,17 +678,24 @@ class AdminPanel {
             return;
         }
         
-        if (newUsername.length < 3) {
-            this.showNotification('Username must be at least 3 characters long', 'error');
-            return;
-        }
-        
         if (newUsername === this.currentUser.username) {
             this.showNotification('New username must be different from current username', 'error');
             return;
         }
         
-        // Update username
+        // Get current credentials or create new ones
+        const storedCredentials = localStorage.getItem('admin_credentials');
+        let credentials = { username: 'admin', password: 'admin123' };
+        
+        if (storedCredentials) {
+            credentials = JSON.parse(storedCredentials);
+        }
+        
+        // Update username in credentials
+        credentials.username = newUsername;
+        localStorage.setItem('admin_credentials', JSON.stringify(credentials));
+        
+        // Update current user session
         this.currentUser.username = newUsername;
         localStorage.setItem('admin_user', JSON.stringify(this.currentUser));
         
@@ -683,7 +703,13 @@ class AdminPanel {
         document.getElementById('currentUsername').value = newUsername;
         document.getElementById('newUsername').value = '';
         
-        this.showNotification('Username changed successfully!', 'success');
+        // Update username display in header
+        const usernameDisplay = document.getElementById('usernameDisplay');
+        if (usernameDisplay) {
+            usernameDisplay.textContent = newUsername;
+        }
+        
+        this.showNotification('Username changed successfully! Please use the new username for future logins.', 'success');
     }
 
     changePassword() {
@@ -696,7 +722,16 @@ class AdminPanel {
             return;
         }
         
-        if (currentPassword !== 'admin123') {
+        // Get current stored password or use default
+        const storedCredentials = localStorage.getItem('admin_credentials');
+        let currentStoredPassword = 'admin123';
+        
+        if (storedCredentials) {
+            const credentials = JSON.parse(storedCredentials);
+            currentStoredPassword = credentials.password;
+        }
+        
+        if (currentPassword !== currentStoredPassword) {
             this.showNotification('Current password is incorrect', 'error');
             return;
         }
@@ -711,8 +746,16 @@ class AdminPanel {
             return;
         }
         
-        // Save new password (in a real app, this would be hashed and sent to server)
-        localStorage.setItem('adminPassword', newPassword);
+        // Get current credentials or create new ones
+        let credentials = { username: 'admin', password: 'admin123' };
+        
+        if (storedCredentials) {
+            credentials = JSON.parse(storedCredentials);
+        }
+        
+        // Update password in credentials
+        credentials.password = newPassword;
+        localStorage.setItem('admin_credentials', JSON.stringify(credentials));
         
         // Clear form
         document.getElementById('currentPassword').value = '';
