@@ -9,6 +9,7 @@ body {
     line-height: 1.6;
     color: #333;
     overflow-x: hidden;
+    background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 50%, #f0f9ff 100%);
 }
 
 .container {
@@ -32,6 +33,16 @@ body {
     0% { background-position: 0% 50%; }
     50% { background-position: 100% 50%; }
     100% { background-position: 0% 50%; }
+}
+
+@keyframes float {
+    0%, 100% { transform: translateY(0px); }
+    50% { transform: translateY(-20px); }
+}
+
+@keyframes pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.5; }
 }
 
 .animate-fadeInUp {
@@ -62,7 +73,10 @@ body {
 .logo {
     font-size: 1.5rem;
     font-weight: 700;
-    color: #b8860b;
+    background: linear-gradient(135deg, #0ea5e9, #06b6d4, #10b981);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
     text-decoration: none;
 }
 
@@ -81,7 +95,7 @@ body {
 }
 
 .nav-link:hover {
-    color: #b8860b;
+    color: #0ea5e9;
 }
 
 /* Language Switcher */
@@ -93,7 +107,7 @@ body {
 
 .lang-btn {
     padding: 0.5rem 1rem;
-    border: 2px solid rgba(212, 165, 116, 0.3);
+    border: 2px solid rgba(14, 165, 233, 0.3);
     background: rgba(255, 255, 255, 0.9);
     color: #64748b;
     border-radius: 8px;
@@ -105,30 +119,30 @@ body {
 }
 
 .lang-btn:hover {
-    border-color: #d4a574;
-    background: rgba(212, 165, 116, 0.1);
-    color: #d4a574;
+    border-color: #0ea5e9;
+    background: rgba(14, 165, 233, 0.1);
+    color: #0ea5e9;
 }
 
 .lang-btn.active {
-    background: linear-gradient(135deg, #d4a574, #b8860b);
-    border-color: #d4a574;
+    background: linear-gradient(135deg, #0ea5e9, #06b6d4);
+    border-color: #0ea5e9;
     color: white;
-    box-shadow: 0 4px 12px rgba(212, 165, 116, 0.3);
+    box-shadow: 0 4px 12px rgba(14, 165, 233, 0.4);
 }
 
 .lang-btn.active:hover {
-    background: linear-gradient(135deg, #c19660, #a0750a);
+    background: linear-gradient(135deg, #0284c7, #0891b2);
     transform: translateY(-1px);
-    box-shadow: 0 6px 20px rgba(212, 165, 116, 0.4);
+    box-shadow: 0 6px 20px rgba(14, 165, 233, 0.5);
 }
 
 .admin-link {
-    background: linear-gradient(135deg, #d4a574, #b8860b);
+    background: linear-gradient(135deg, #10b981, #059669);
     color: white !important;
     padding: 0.5rem 1rem;
     border-radius: 20px;
-    box-shadow: 0 4px 15px rgba(184, 134, 11, 0.3);
+    box-shadow: 0 4px 15px rgba(16, 185, 129, 0.4);
 }
 
 .admin-link:hover {
@@ -147,7 +161,7 @@ body {
 /* Company Page Styles */
 .company-header {
     padding: 2rem 0;
-    background: linear-gradient(135deg, rgba(212, 165, 116, 0.1), rgba(184, 134, 11, 0.1));
+    background: linear-gradient(135deg, rgba(14, 165, 233, 0.1), rgba(6, 182, 212, 0.1));
 }
 
 .hero {
@@ -177,7 +191,7 @@ body {
     left: 0;
     right: 0;
     bottom: 0;
-    background: linear-gradient(to bottom right, rgba(0, 0, 0, 0.2) 0%, transparent 50%, rgba(0, 0, 0, 0.3) 100%);
+    background: linear-gradient(135deg, rgba(14, 165, 233, 0.5) 0%, rgba(6, 182, 212, 0.4) 50%, rgba(16, 185, 129, 0.5) 100%);
 }
 
 .hero-content {
@@ -218,7 +232,7 @@ body {
 .hero-btn {
     display: inline-flex;
     align-items: center;
-    background: linear-gradient(to right, #d97706, #b45309);
+    background: linear-gradient(135deg, #f97316, #f59e0b, #eab308);
     color: white;
     border: none;
     padding: 1rem 2.5rem;
@@ -228,18 +242,19 @@ body {
     cursor: pointer;
     transition: all 0.3s ease;
     text-decoration: none;
-    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+    box-shadow: 0 10px 30px rgba(249, 115, 22, 0.4);
     text-transform: none;
     letter-spacing: 0;
     position: relative;
     white-space: nowrap;
     transform: scale(1);
+    animation: float 3s ease-in-out infinite;
 }
 
 .hero-btn:hover {
-    background: linear-gradient(to right, #b45309, #92400e);
-    transform: scale(1.05);
-    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+    background: linear-gradient(135deg, #ea580c, #f59e0b, #ca8a04);
+    transform: scale(1.05) translateY(-5px);
+    box-shadow: 0 15px 40px rgba(249, 115, 22, 0.5);
 }
 
 .hero-btn::before {
@@ -267,24 +282,70 @@ body {
 }
 
 .companies-section {
-    background: linear-gradient(135deg, #faf7f2 0%, #f5f1e8 50%, #f0ebe0 100%);
+    background: linear-gradient(135deg, #dbeafe 0%, #bfdbfe 50%, #dbeafe 100%);
+    position: relative;
+    overflow: hidden;
+}
+
+.companies-section::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: radial-gradient(circle at 20% 50%, rgba(14, 165, 233, 0.1) 0%, transparent 50%),
+                radial-gradient(circle at 80% 50%, rgba(16, 185, 129, 0.1) 0%, transparent 50%);
+    pointer-events: none;
 }
 
 .products-section {
-    background: linear-gradient(135deg, #f8f6f0 0%, #f5f1e8 50%, #faf7f2 100%);
+    background: linear-gradient(135deg, #d1fae5 0%, #a7f3d0 50%, #d1fae5 100%);
+    position: relative;
+    overflow: hidden;
+}
+
+.products-section::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: radial-gradient(circle at 30% 40%, rgba(6, 182, 212, 0.1) 0%, transparent 50%),
+                radial-gradient(circle at 70% 60%, rgba(249, 115, 22, 0.1) 0%, transparent 50%);
+    pointer-events: none;
 }
 
 .contact-section {
-    background: linear-gradient(135deg, #f0ebe0 0%, #f5f1e8 50%, #faf7f2 100%);
+    background: linear-gradient(135deg, #fef3c7 0%, #fde68a 50%, #fef3c7 100%);
+    position: relative;
+    overflow: hidden;
+}
+
+.contact-section::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: radial-gradient(circle at 50% 50%, rgba(249, 115, 22, 0.1) 0%, transparent 50%);
+    pointer-events: none;
 }
 
 .section-title {
     font-size: clamp(2.5rem, 5vw, 5rem);
-    font-weight: 300;
+    font-weight: 700;
     text-align: center;
     margin-bottom: 1rem;
-    color: #1e293b;
+    background: linear-gradient(135deg, #0ea5e9, #06b6d4, #10b981);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
     letter-spacing: -0.02em;
+    position: relative;
+    z-index: 1;
 }
 
 .section-subtitle {
@@ -293,6 +354,8 @@ body {
     color: #64748b;
     margin-bottom: 4rem;
     font-weight: 300;
+    position: relative;
+    z-index: 1;
 }
 
 /* Companies Grid */
@@ -307,13 +370,14 @@ body {
     position: relative;
     background: linear-gradient(135deg, rgba(255, 255, 255, 0.95), rgba(255, 255, 255, 0.9));
     backdrop-filter: blur(15px);
-    border: 1px solid rgba(212, 165, 116, 0.3);
+    border: 2px solid transparent;
+    background-clip: padding-box;
     border-radius: 20px;
     padding: 2.5rem 2rem;
     text-align: center;
     transition: all 0.4s ease;
     cursor: pointer;
-    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.08);
+    box-shadow: 0 10px 40px rgba(14, 165, 233, 0.15);
     height: 180px;
     display: flex;
     align-items: center;
@@ -321,17 +385,37 @@ body {
     overflow: hidden;
 }
 
+.company-card::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: 20px;
+    padding: 2px;
+    background: linear-gradient(135deg, #0ea5e9, #06b6d4, #10b981);
+    -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+    -webkit-mask-composite: xor;
+    mask-composite: exclude;
+    opacity: 0;
+    transition: opacity 0.4s ease;
+}
+
 .company-card:hover {
-    transform: translateY(-10px);
-    box-shadow: 0 25px 50px rgba(212, 165, 116, 0.25);
-    border-color: #d4a574;
+    transform: translateY(-10px) scale(1.02);
+    box-shadow: 0 25px 50px rgba(14, 165, 233, 0.3);
     background: linear-gradient(135deg, rgba(255, 255, 255, 0.98), rgba(255, 255, 255, 0.95));
+}
+
+.company-card:hover::before {
+    opacity: 1;
 }
 
 .company-card h3 {
     font-size: 2rem;
-    font-weight: 600;
-    color: #1e293b;
+    font-weight: 700;
+    background: linear-gradient(135deg, #0ea5e9, #06b6d4);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
     letter-spacing: 0.05em;
     transition: all 0.3s ease;
     margin: 0;
@@ -339,20 +423,24 @@ body {
 }
 
 .company-card:hover h3 {
-    color: #d4a574;
+    background: linear-gradient(135deg, #10b981, #06b6d4, #0ea5e9);
+    -webkit-background-clip: text;
+    background-clip: text;
     transform: scale(1.05);
 }
 
 .company-divider {
     width: 80px;
-    height: 2px;
-    background: linear-gradient(90deg, transparent, #d4a574, transparent);
+    height: 3px;
+    background: linear-gradient(90deg, transparent, #0ea5e9, #10b981, transparent);
     margin: 1rem auto 0;
     transition: width 0.3s ease;
+    border-radius: 2px;
 }
 
 .company-card:hover .company-divider {
-    width: 120px;
+    width: 140px;
+    background: linear-gradient(90deg, transparent, #10b981, #06b6d4, #0ea5e9, transparent);
 }
 
 .company-overlay {
@@ -403,14 +491,14 @@ body {
     background: rgba(255, 255, 255, 0.9);
     backdrop-filter: blur(10px);
     transition: all 0.3s ease;
-    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
-    border: 1px solid rgba(212, 165, 116, 0.2);
+    box-shadow: 0 8px 32px rgba(14, 165, 233, 0.15);
+    border: 2px solid rgba(14, 165, 233, 0.2);
 }
 
 .search-input:focus {
     outline: none;
-    border-color: #d4a574;
-    box-shadow: 0 12px 40px rgba(212, 165, 116, 0.25);
+    border-color: #0ea5e9;
+    box-shadow: 0 12px 40px rgba(14, 165, 233, 0.3);
     background: rgba(255, 255, 255, 0.95);
 }
 
@@ -424,7 +512,7 @@ body {
     right: 12px;
     top: 50%;
     transform: translateY(-50%);
-    background: linear-gradient(135deg, #d4a574, #b8860b);
+    background: linear-gradient(135deg, #0ea5e9, #06b6d4);
     border: none;
     border-radius: 12px;
     width: 48px;
@@ -435,13 +523,13 @@ body {
     color: white;
     cursor: pointer;
     transition: all 0.3s ease;
-    box-shadow: 0 4px 12px rgba(212, 165, 116, 0.3);
+    box-shadow: 0 4px 12px rgba(14, 165, 233, 0.4);
 }
 
 .search-btn:hover {
-    background: linear-gradient(135deg, #c19660, #a0750a);
-    transform: translateY(-50%) scale(1.05);
-    box-shadow: 0 6px 20px rgba(212, 165, 116, 0.4);
+    background: linear-gradient(135deg, #0284c7, #0891b2);
+    transform: translateY(-50%) scale(1.1) rotate(5deg);
+    box-shadow: 0 6px 20px rgba(14, 165, 233, 0.5);
 }
 
 /* Filter Container */
@@ -455,11 +543,12 @@ body {
     display: flex;
     flex-wrap: wrap;
     gap: 0.75rem;
-    background: white;
+    background: rgba(255, 255, 255, 0.8);
+    backdrop-filter: blur(10px);
     padding: 1rem;
     border-radius: 16px;
-    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
-    border: 1px solid rgba(212, 165, 116, 0.1);
+    box-shadow: 0 4px 15px rgba(14, 165, 233, 0.1);
+    border: 2px solid rgba(14, 165, 233, 0.2);
 }
 
 .filter-btn {
@@ -480,9 +569,9 @@ body {
 }
 
 .filter-btn.active {
-    background: linear-gradient(135deg, #d4a574, #b8860b);
+    background: linear-gradient(135deg, #0ea5e9, #06b6d4);
     color: white;
-    box-shadow: 0 4px 15px rgba(184, 134, 11, 0.4);
+    box-shadow: 0 4px 15px rgba(14, 165, 233, 0.4);
 }
 
 /* Products Grid */
@@ -496,16 +585,35 @@ body {
     background: white;
     border-radius: 20px;
     overflow: hidden;
-    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
-    border: 1px solid rgba(212, 165, 116, 0.1);
+    box-shadow: 0 4px 15px rgba(14, 165, 233, 0.1);
+    border: 2px solid rgba(14, 165, 233, 0.15);
     transition: all 0.4s ease;
     cursor: pointer;
+    position: relative;
+}
+
+.product-card::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: 20px;
+    padding: 2px;
+    background: linear-gradient(135deg, #0ea5e9, #10b981, #f97316);
+    -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+    -webkit-mask-composite: xor;
+    mask-composite: exclude;
+    opacity: 0;
+    transition: opacity 0.4s ease;
+    z-index: 1;
 }
 
 .product-card:hover {
-    transform: translateY(-8px);
-    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
-    border-color: #d4a574;
+    transform: translateY(-8px) scale(1.02);
+    box-shadow: 0 20px 40px rgba(14, 165, 233, 0.25);
+}
+
+.product-card:hover::before {
+    opacity: 1;
 }
 
 .product-image {
@@ -576,7 +684,10 @@ body {
 .product-price {
     font-size: 1.5rem;
     font-weight: 700;
-    color: #d4a574;
+    background: linear-gradient(135deg, #0ea5e9, #10b981);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
     margin-bottom: 1rem;
 }
 
@@ -603,20 +714,21 @@ body {
 .view-details-btn {
     width: 100%;
     padding: 0.75rem;
-    background: linear-gradient(135deg, #d4a574, #b8860b);
+    background: linear-gradient(135deg, #0ea5e9, #06b6d4, #10b981);
     color: white;
     border: none;
     border-radius: 12px;
     font-weight: 600;
     cursor: pointer;
     transition: all 0.3s ease;
-    box-shadow: 0 4px 15px rgba(184, 134, 11, 0.3);
+    box-shadow: 0 4px 15px rgba(14, 165, 233, 0.4);
+    background-size: 200% 200%;
+    animation: gradientShift 3s ease infinite;
 }
 
 .view-details-btn:hover {
     transform: translateY(-2px);
-    box-shadow: 0 8px 25px rgba(184, 134, 11, 0.5);
-    background: linear-gradient(135deg, #b8860b, #9a7209);
+    box-shadow: 0 8px 25px rgba(14, 165, 233, 0.5);
 }
 
 /* Contact Info */
@@ -632,14 +744,15 @@ body {
     border-radius: 16px;
     padding: 2rem;
     text-align: center;
-    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
-    border: 1px solid rgba(212, 165, 116, 0.1);
+    box-shadow: 0 4px 15px rgba(249, 115, 22, 0.15);
+    border: 2px solid rgba(249, 115, 22, 0.2);
     transition: all 0.3s ease;
 }
 
 .contact-item:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+    transform: translateY(-5px) scale(1.02);
+    box-shadow: 0 8px 25px rgba(249, 115, 22, 0.3);
+    border-color: #f97316;
 }
 
 .contact-item h3 {
@@ -719,7 +832,8 @@ body {
     width: 50px;
     height: 50px;
     border: 4px solid #f3f4f6;
-    border-top: 4px solid #d4a574;
+    border-top: 4px solid #0ea5e9;
+    border-right: 4px solid #10b981;
     border-radius: 50%;
     animation: spin 1s linear infinite;
 }
@@ -775,8 +889,8 @@ body {
     padding: 4rem 2rem;
     background: white;
     border-radius: 20px;
-    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
-    border: 1px solid rgba(212, 165, 116, 0.1);
+    box-shadow: 0 4px 15px rgba(14, 165, 233, 0.1);
+    border: 2px solid rgba(14, 165, 233, 0.15);
 }
 
 .empty-state h3 {
@@ -918,18 +1032,18 @@ body {
     display: inline-flex;
     align-items: center;
     gap: 0.5rem;
-    color: #d4a574;
+    color: #0ea5e9;
     text-decoration: none;
     font-weight: 500;
     transition: all 0.3s ease;
     padding: 0.5rem 1rem;
     border-radius: 8px;
-    border: 2px solid rgba(212, 165, 116, 0.3);
+    border: 2px solid rgba(14, 165, 233, 0.3);
 }
 
 .back-link:hover {
-    background: rgba(212, 165, 116, 0.1);
-    border-color: #d4a574;
+    background: rgba(14, 165, 233, 0.1);
+    border-color: #0ea5e9;
     transform: translateX(-5px);
 }
 
@@ -970,16 +1084,34 @@ body {
 
 .company-products-section {
     padding: 4rem 0;
+    background: linear-gradient(135deg, #d1fae5 0%, #a7f3d0 50%, #d1fae5 100%);
+    position: relative;
+    overflow: hidden;
+}
+
+.company-products-section::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: radial-gradient(circle at 30% 40%, rgba(6, 182, 212, 0.1) 0%, transparent 50%),
+                radial-gradient(circle at 70% 60%, rgba(249, 115, 22, 0.1) 0%, transparent 50%);
+    pointer-events: none;
 }
 
 .modal-company-name {
-    color: #d4a574;
+    background: linear-gradient(135deg, #0ea5e9, #06b6d4);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
     font-weight: 600;
     margin-bottom: 1rem;
 }
 
 .contact-btn {
-    background: linear-gradient(135deg, #d4a574, #b8860b);
+    background: linear-gradient(135deg, #0ea5e9, #06b6d4);
     color: white;
     border: none;
     padding: 1rem 2rem;
@@ -992,5 +1124,6 @@ body {
 
 .contact-btn:hover {
     transform: translateY(-2px);
-    box-shadow: 0 8px 25px rgba(212, 165, 116, 0.3);
+    box-shadow: 0 8px 25px rgba(14, 165, 233, 0.4);
+    background: linear-gradient(135deg, #0284c7, #0891b2);
 }
